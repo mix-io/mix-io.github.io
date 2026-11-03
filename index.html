@@ -9,6 +9,24 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
 <style>@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
 html,body,*{touch-action:manipulation}
+
+.wplay.wlate{opacity:0;transform:translateY(8px);animation:wlate .9s 1s cubic-bezier(.2,.8,.25,1) forwards,welPulse 3.2s 2.4s ease-in-out infinite}
+@keyframes wlate{to{opacity:1;transform:none}}
+.wbeg{position:relative;overflow:hidden}
+.wbeg .bt{position:relative;z-index:2}
+.wbeg .lq{position:absolute;left:-10%;right:-10%;bottom:0;height:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.1));border-radius:45% 55% 0 0/10px 12px 0 0}
+.wbeg .lq::before{content:"";position:absolute;left:0;right:0;top:-5px;height:10px;border-radius:50%;background:rgba(255,255,255,.22);animation:lqw 1.1s ease-in-out infinite alternate}
+@keyframes lqw{from{transform:translateX(-6%) scaleY(.7)}to{transform:translateX(6%) scaleY(1.2)}}
+.wbeg.wait{color:rgba(255,255,255,.45)!important}
+.wbeg.wait .lq{animation:lqfill 3s 1.2s cubic-bezier(.45,.05,.55,.95) forwards}
+@keyframes lqfill{from{height:0}to{height:112%}}
+.wbeg.ready .lq{height:112%;animation:lqdone .7s ease-out forwards}
+@keyframes lqdone{0%{opacity:1}100%{opacity:0}}
+.wbeg.ready{animation:wbReady .6s cubic-bezier(.3,1.6,.45,1)}
+@keyframes wbReady{40%{transform:scale(1.05)}}
+/* liquid press fill on buttons */
+.lfill{position:absolute;left:-15%;right:-15%;bottom:-10%;height:0;pointer-events:none;z-index:0;border-radius:46% 54% 0 0/12px 14px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.06));animation:lfillUp .5s cubic-bezier(.3,.8,.3,1) forwards}
+@keyframes lfillUp{0%{height:0;opacity:1}70%{height:125%;opacity:1}100%{height:125%;opacity:0}}
 #jBtn{display:none!important}
 body.covered:not(.cine) #dock,body.covered:not(.cine) #scene,body.covered:not(.cine) .row.top,body.covered:not(.cine) .row.target{visibility:hidden}</style>
 <script>document.addEventListener('gesturestart',e=>{if(!(e.target&&e.target.closest&&e.target.closest('#aView')))e.preventDefault();},{passive:false});document.addEventListener('dblclick',e=>{if(!(e.target&&e.target.closest&&e.target.closest('#aView')))e.preventDefault();},{passive:false});</script>
@@ -1296,6 +1314,10 @@ body.bgp .hbg{filter:brightness(.6) saturate(.9)}
 .ov-body,.panel,.rkpanel,.jpc,.gal{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 </style>
 <script>
+(function(){const SEL='.primary,.ybtn,.rkrow,.hintopt,.idrow,.mxbring,.tog,.lbcard,.hs,.ymeter,.yes,.no,.idgo,.sharebtn,.jmore,.rnew';
+document.addEventListener('pointerdown',function(e){var b=e.target&&e.target.closest&&e.target.closest(SEL);if(!b||b.disabled||b.classList.contains('wait'))return;try{var cs=getComputedStyle(b);if(cs.position==='static')b.style.position='relative';if(cs.overflow!=='hidden')b.style.overflow='hidden';var f=document.createElement('i');f.className='lfill';b.appendChild(f);setTimeout(function(){f.remove();},560);}catch(x){}},{passive:true,capture:true});})();
+</script>
+<script>
 window.addEventListener('error', e => { try { (window.__errs = window.__errs || []).push(String(e.message).slice(0, 200)); if (!/[?&#]debug/.test(location.href) || /^script error\.?$/i.test(String(e.message || '').trim())) return; let b = document.getElementById('errBox'); if (!b) { b = document.createElement('div'); b.id = 'errBox'; b.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:#300;color:#fbb;font:11px monospace;padding:8px;border-radius:8px;white-space:pre-wrap'; document.body.appendChild(b); } b.textContent = 'error: ' + e.message + ' @' + e.lineno + ':' + e.colno; } catch (x) {} });
 (() => {
 'use strict';
@@ -1586,7 +1608,7 @@ const BGP = { n: 0, on(W) { BGP.n++; try { $('home').hidden = false; $('home').c
 function openWelcome() {
   const W = $('wel'); if (!W.hidden) return; const st = { name: '', m: 1, d: 1, fav: '' }; const days = m => [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][(m || 1) - 1];
   W.innerHTML = `<div class="wbg"></div>
-  <div class="wstep" data-s="0"><div class="wwm"><div class="wdrop"></div><div class="wrip"></div><div class="wk">welcome to</div><h1>mix.io</h1></div><div class="wsub">mix food-coloring dyes in a glass of water to match colors from all over the world.</div><div class="wplay"><i></i>take a pause · touch the water, it's alive</div><button class="primary wgo wbeg">begin</button>${!ON_SITE && mainLevel() > 1 ? `<button class="mxbring wbring" style="max-width:300px;margin:16px auto 0"><b>already playing? bring my game</b><small>level ${mainLevel()} · one tap, opens on mix-io.github.io</small></button>` : ON_SITE ? '<button class="mxlink wsignin">already have an account? sign in ›</button>' : ''}</div>
+  <div class="wstep" data-s="0"><div class="wwm"><div class="wdrop"></div><div class="wrip"></div><div class="wk">welcome to</div><h1>mix.io</h1></div><div class="wplay wlate"><i></i>take a pause · touch the water, it's alive</div><button class="primary wgo wbeg wait" aria-disabled="true"><span class="lq"></span><span class="bt">begin</span></button>${!ON_SITE && mainLevel() > 1 ? `<button class="mxbring wbring" style="max-width:300px;margin:16px auto 0"><b>already playing? bring my game</b><small>level ${mainLevel()} · one tap, opens on mix-io.github.io</small></button>` : ON_SITE ? '<button class="mxlink wsignin">already have an account? sign in ›</button>' : ''}</div>
   <div class="wstep" data-s="1"><div class="wk">let's make your color dna</div><h2>what's your name?</h2><div class="wbody"><input id="wName" class="idin" maxlength="24" autocomplete="given-name" placeholder="first name" enterkeyhint="next"></div><button class="primary wgo" id="wG1" disabled>continue</button></div>
   <div class="wstep" data-s="2"><div class="wk" id="wHi">nice to meet you</div><h2>what's your birthday?</h2><div class="wbody"><div class="idbd"><div class="whl" id="wM"></div><div class="whl" id="wD"></div></div></div><button class="primary wgo" id="wG2">continue</button></div>
   <div class="wstep" data-s="3"><div class="wk">last one</div><h2>favorite color?</h2><div class="wbody"><div class="idfav">${IDFAV.map(f => `<button class="idf" data-f="${f[0]}" style="--c:${f[2]}" aria-label="${f[0]}"></button>`).join('')}</div></div><button class="primary wgo" id="wG3" disabled>create my dna</button></div>
@@ -1599,7 +1621,7 @@ function openWelcome() {
     let snT = 0, tch = false; const snap = () => { if (tch) return; const k = clamp(Math.round(sc.scrollTop / IH), 0, items.length - 1); if (Math.abs(sc.scrollTop - k * IH) > 2) sc.scrollTo({ top: k * IH, behavior: 'smooth' }); }; sc.addEventListener('touchstart', () => { tch = true; clearTimeout(snT); }, { passive: true }); sc.addEventListener('touchend', () => { tch = false; clearTimeout(snT); snT = setTimeout(snap, 140); }, { passive: true }); sc.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(paint); clearTimeout(snT); snT = setTimeout(snap, 140); }, { passive: true }); its.forEach((it, k) => it.addEventListener('click', () => sc.scrollTo({ top: k * IH, behavior: 'smooth' })));
     requestAnimationFrame(() => { sc.scrollTop = sel * IH; paint(); el._ready = true; }); };
   const fillD = () => { const n = days(st.m); if (st.d > n) st.d = n; $('wD')._ready = false; wheel($('wD'), Array.from({ length: n }, (_, i) => String(i + 1)), st.d - 1, i => st.d = i + 1); };
-  steps[0].addEventListener('click', e => { if (e.target.closest('.wbring')) return bringMain(); if (e.target.closest('.wsignin')) { buzz(5); W.classList.add('out'); openAccountSheet(true, 'in'); setTimeout(() => { W.hidden = true; W.classList.remove('out'); W.innerHTML = ''; BGP.off(); }, 900); return; } if (cur !== 0 || !e.target.closest('.wwm,.wbeg,h1')) return; go(1); setTimeout(() => { try { $('wName').focus({ preventScroll: true }); } catch (e) {} }, 700); });
+  steps[0].addEventListener('click', e => { if (e.target.closest('.wbring')) return bringMain(); if (e.target.closest('.wsignin')) { buzz(5); W.classList.add('out'); openAccountSheet(true, 'in'); setTimeout(() => { W.hidden = true; W.classList.remove('out'); W.innerHTML = ''; BGP.off(); }, 900); return; } if (cur !== 0 || !e.target.closest('.wbeg')) return; if (e.target.closest('.wbeg').classList.contains('wait')) { buzz(3); return; } go(1); setTimeout(() => { try { $('wName').focus({ preventScroll: true }); } catch (e) {} }, 700); });
   const nm = $('wName'); nm.addEventListener('input', () => $('wG1').disabled = !nm.value.trim()); nm.addEventListener('keydown', e => { if (e.key === 'Enter' && nm.value.trim()) $('wG1').click(); });
   $('wG1').addEventListener('click', () => { st.name = nm.value.trim().slice(0, 24); if (!st.name) return; nm.blur(); $('wHi').textContent = `nice to meet you, ${st.name.toLowerCase()}`; go(2); if (!$('wM').firstChild) { wheel($('wM'), MONTHS, 0, i => { const was = st.m; st.m = i + 1; if (was !== st.m && $('wD').firstChild) fillD(); }); fillD(); } });
   $('wG2').addEventListener('click', () => go(3));
@@ -1609,7 +1631,7 @@ function openWelcome() {
     O.classList.add('bang'); try { bigBang(W, c, () => { O.classList.add('in'); try { W.animate([{ transform: 'translate(0,0)' }, { transform: 'translate(-7px,4px)' }, { transform: 'translate(6px,-5px)' }, { transform: 'translate(-4px,-3px)' }, { transform: 'translate(3px,4px)' }, { transform: 'none' }], { duration: 520, easing: 'ease-out' }); } catch (e) {} buzz([40, 20, 70]); try { clink(); } catch (e) {} }); } catch (e) { O.classList.add('in'); } const t0 = performance.now() + 1850; const ease = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; const tw = () => { const k = clamp((performance.now() - t0) / 2000, 0, 1), e = ease(k); DNA.sig = c0.map((v, i) => v + (c[i] - v) * e); dnaKey = ''; if (k < 1 && !W.hidden) requestAnimationFrame(tw); else DNA.sig = c; }; requestAnimationFrame(tw); setTimeout(() => buzz([6, 80, 6, 70, 8, 60, 10, 40, 14]), 250); setTimeout(() => { O.classList.add('burst'); DNA.pulseT = 1; try { dnaBurst(O); } catch (e) {} buzz([10, 30, 16]); try { clink(); } catch (e) {} $('wMix').textContent = 'your color dna'; $('wHex').style.opacity = 1; S.classList.add('done'); }, 3900);
     save.idn = { name: st.name, m: st.m, d: st.d, fav: st.fav }; persist(); dnaKey = ''; applyDNA(); try { HOMEBG.recolor(); } catch (e) {} });
   $('wG4').addEventListener('click', () => { buzz(8); if (!SB.signedIn() && !save.acctOffline) { save.acctAsked = 1; save.acctMode = save.acctMode || 'guest'; persist(); openAccountSheet(true); } W.classList.add('out'); try { goTab('home'); } catch (e) {} setTimeout(() => { DNA.sig = idColor(save.idn); W.hidden = true; try { dnaToHome(); } catch (e) {} W.classList.remove('out'); W.innerHTML = ''; BGP.off(); toast(`welcome, ${st.name.toLowerCase()} ✦`); setTimeout(ONB.next, 900); }, 900); });
-  go(0);
+  go(0); { const b = W.querySelector('.wbeg'); if (b) setTimeout(() => { b.classList.remove('wait'); b.removeAttribute('aria-disabled'); b.classList.add('ready'); try { buzz(8); } catch (e) {} }, 4200); }
 }
 function bigBang(W, rgb, onBang) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; if (reduce) { setTimeout(onBang, 300); return; }
@@ -1670,7 +1692,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6ae9601e'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6ae96104'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
