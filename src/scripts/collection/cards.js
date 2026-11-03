@@ -350,9 +350,9 @@ const hex2=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255);
 const RAR = {std:{label:'Standard',col:'#c9ccd2',glow:'rgba(255,255,255,.25)',sell:2},holo:{label:'Holo',col:'#dfe6ee',glow:'rgba(200,215,235,.6)',sell:5},liquid:{label:'Liquid',col:'#5ff0d0',glow:'var(--c)',sell:10},gold:{label:'Gold Prism',col:'#ffd58a',glow:'rgba(255,195,80,.85)',sell:30},secret:{label:'Secret Rare',col:'#ff9ae6',glow:'conic-gradient(#ff5ad1,#ffd66b,#5affc8,#5aa8ff,#b45aff,#ff5ad1)',sell:100}};
 const RANK = {std:0,holo:1,liquid:2,gold:3,secret:4};
 const PACKS = [
-  {id:'std',fp:[[.55,.6,.68],[.32,.36,.42],[.75,.78,.84],[.45,.5,.58]],cls:'p-std',name:'Standard',cost:30,odds:{std:86,holo:11.6,liquid:2.1,gold:.3},sw:['rgba(140,150,165,.6)','rgba(60,70,85,.6)','rgba(200,205,215,.5)']},
-  {id:'rare',fp:[[1,.25,.35],[.7,.06,.2],[1,.55,.45],[.85,.15,.3]],cls:'p-rare',name:'Rare',cost:80,odds:{std:54,holo:33,liquid:11,gold:2},floor:'holo',sw:['rgba(255,60,90,.75)','rgba(120,10,40,.7)','rgba(255,150,120,.5)']},
-  {id:'prem',fp:[[1,.8,.35],[.5,.25,1],[1,.4,.8],[.75,.55,1]],cls:'p-prem',name:'Premium',cost:200,odds:{std:22,holo:45,liquid:24,gold:8.85,secret:.15},floor:'liquid',sw:['rgba(255,205,90,.75)','rgba(130,60,255,.8)','rgba(255,90,200,.5)']}];
+  {id:'std',fp:[[.55,.6,.68],[.32,.36,.42],[.75,.78,.84],[.45,.5,.58]],cls:'p-std',name:'Standard',cost:15,odds:{std:86,holo:11.6,liquid:2.1,gold:.3},sw:['rgba(140,150,165,.6)','rgba(60,70,85,.6)','rgba(200,205,215,.5)']},
+  {id:'rare',fp:[[1,.25,.35],[.7,.06,.2],[1,.55,.45],[.85,.15,.3]],cls:'p-rare',name:'Rare',cost:40,odds:{std:54,holo:33,liquid:11,gold:2},floor:'holo',sw:['rgba(255,60,90,.75)','rgba(120,10,40,.7)','rgba(255,150,120,.5)']},
+  {id:'prem',fp:[[1,.8,.35],[.5,.25,1],[1,.4,.8],[.75,.55,1]],cls:'p-prem',name:'Premium',cost:100,odds:{std:22,holo:45,liquid:24,gold:8.85,secret:.15},floor:'liquid',sw:['rgba(255,205,90,.75)','rgba(130,60,255,.8)','rgba(255,90,200,.5)']}];
 /* ---------- state ---------- */
 const st={get bal(){return save.chroma||0},set bal(v){save.chroma=Math.max(0,Math.round(v))},get own(){return save.cards||(save.cards={})}};const keep=()=>{try{persist();}catch(e){}};
 const $=s=>R.querySelector(s);
