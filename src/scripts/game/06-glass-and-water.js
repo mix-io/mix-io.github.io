@@ -318,7 +318,7 @@ function landDrop(dp) {
     used.set(WATER, (used.get(WATER) || 0) + 1);
     wCount++; if (meanA[0] + meanA[1] + meanA[2] > 0) { meanA = meanA.map(v => v * WF); if (fluidOK) scaleDye(WF); idleT = 0; }
     ripples.push({ x: dp.x, t: 0, a: .45 }); for (let i = 0; i < 3; i++) bubbles.push({ x: dp.x + (Math.random() - 0.5) * 10, y: G.y0 + 6 + Math.random() * 20, r: 0.8 + Math.random() * 1.6, vy: 40 + Math.random() * 40, ph: Math.random() * 6 });
-    plink(WATER); buzz(6); updateStat(); return;
+    plink(WATER); HAP.light(); updateStat(); return;
   }
   const amt = d.a.map(v => v * DROP * Math.pow(WF, wCount));
   const oldTot = meanA[0] + meanA[1] + meanA[2];

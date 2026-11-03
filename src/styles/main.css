@@ -1201,4 +1201,5 @@ body,body *{-webkit-touch-callout:none}img,svg,canvas{-webkit-user-drag:none}inp
 /* reduced motion: everything settles instantly, nothing loops */
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
+.rkring.fresh .rkr1{animation:rkfill 1.1s var(--spring-soft) .15s both,rkflash 1.6s ease-out 1.2s}@keyframes rkflash{0%{filter:drop-shadow(0 0 6px var(--gc))}30%{filter:drop-shadow(0 0 22px var(--gc)) brightness(1.5)}100%{filter:drop-shadow(0 0 6px var(--gc))}}.rkchip.fresh{animation:rkpop .9s var(--spring-snap) 1.3s both}@keyframes rkpop{0%{transform:scale(1.3)}50%{transform:scale(1.75)}100%{transform:scale(1.3)}}
 </style>

@@ -110,6 +110,7 @@ function bagNext(level) {
   if (!save.seed) { save.seed = (crypto && crypto.getRandomValues ? crypto.getRandomValues(new Uint32Array(1))[0] : Math.floor(Math.random() * 4294967296)) >>> 0 || 1; save.op = 0; }
   const perm = () => { if (bagNext._s === save.seed && bagNext._p) return bagNext._p; let a = save.seed >>> 0; const r = () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; const P = Array.from({ length: N }, (_, i) => i); for (let i = N - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const t = P[i]; P[i] = P[j]; P[j] = t; } bagNext._s = save.seed; bagNext._p = P; return P; };
   { const rq = save.retry || []; for (let r = 0; r < rq.length; r++) if (rq[r].at <= level && COLORS[rq[r].i]) { const it = rq.splice(r, 1)[0]; save.retry = rq; save.retryNow = COLORS[it.i][0]; return it.i; } }
+  if (level <= 10) { const P = perm(); for (let k = save.op || 0; k < N; k++) { const i = P[k]; if (played.has(i) || COLORS[i][0] === first || xTier(COLORS[i]) >= 3) continue; save.played.push(i); if (k === (save.op || 0)) save.op = k + 1; return i; } }
   for (let lap = 0; lap < 2; lap++) { const P = perm(); while ((save.op || 0) < N) { const i = P[save.op++]; if (!played.has(i) && COLORS[i][0] !== first) { save.played.push(i); return i; } }
     save.played = []; played.clear(); save.seed = ((save.seed * 1103515245 + 12345) >>> 0) || 7; save.op = 0; }
   return Math.floor(Math.random() * N);

@@ -1265,6 +1265,7 @@ body,body *{-webkit-touch-callout:none}img,svg,canvas{-webkit-user-drag:none}inp
 /* reduced motion: everything settles instantly, nothing loops */
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
+.rkring.fresh .rkr1{animation:rkfill 1.1s var(--spring-soft) .15s both,rkflash 1.6s ease-out 1.2s}@keyframes rkflash{0%{filter:drop-shadow(0 0 6px var(--gc))}30%{filter:drop-shadow(0 0 22px var(--gc)) brightness(1.5)}100%{filter:drop-shadow(0 0 6px var(--gc))}}.rkchip.fresh{animation:rkpop .9s var(--spring-snap) 1.3s both}@keyframes rkpop{0%{transform:scale(1.3)}50%{transform:scale(1.75)}100%{transform:scale(1.3)}}
 </style>
 
 <div id="bootc" style="position:fixed;inset:0;background:#000;z-index:9999;transition:opacity .5s"></div>
@@ -1555,6 +1556,7 @@ function bagNext(level) {
   if (!save.seed) { save.seed = (crypto && crypto.getRandomValues ? crypto.getRandomValues(new Uint32Array(1))[0] : Math.floor(Math.random() * 4294967296)) >>> 0 || 1; save.op = 0; }
   const perm = () => { if (bagNext._s === save.seed && bagNext._p) return bagNext._p; let a = save.seed >>> 0; const r = () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; const P = Array.from({ length: N }, (_, i) => i); for (let i = N - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const t = P[i]; P[i] = P[j]; P[j] = t; } bagNext._s = save.seed; bagNext._p = P; return P; };
   { const rq = save.retry || []; for (let r = 0; r < rq.length; r++) if (rq[r].at <= level && COLORS[rq[r].i]) { const it = rq.splice(r, 1)[0]; save.retry = rq; save.retryNow = COLORS[it.i][0]; return it.i; } }
+  if (level <= 10) { const P = perm(); for (let k = save.op || 0; k < N; k++) { const i = P[k]; if (played.has(i) || COLORS[i][0] === first || xTier(COLORS[i]) >= 3) continue; save.played.push(i); if (k === (save.op || 0)) save.op = k + 1; return i; } }
   for (let lap = 0; lap < 2; lap++) { const P = perm(); while ((save.op || 0) < N) { const i = P[save.op++]; if (!played.has(i) && COLORS[i][0] !== first) { save.played.push(i); return i; } }
     save.played = []; played.clear(); save.seed = ((save.seed * 1103515245 + 12345) >>> 0) || 7; save.op = 0; }
   return Math.floor(Math.random() * N);
@@ -1817,7 +1819,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6aea6d08'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6aea7550'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
@@ -1924,6 +1926,7 @@ function chord() { return;
 }
 const IOSH = (() => { try { if ('vibrate' in navigator) return null; const l = document.createElement('label'); l.style.cssText = 'position:fixed;left:-99px;top:-99px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none'; const i = document.createElement('input'); i.type = 'checkbox'; i.setAttribute('switch', ''); l.appendChild(i); document.body.appendChild(l); let lastT = 0; return () => { const n = performance.now(); if (n - lastT < 40) return; lastT = n; try { l.click(); } catch (e) {} }; } catch (e) { return null; } })();
 const haptic = p => { if (!save.haptics) return; try { if (navigator.vibrate) { navigator.vibrate(p); return; } } catch (e) {} if (IOSH) { const n = Array.isArray(p) ? Math.ceil(p.length / 2) : 1; for (let k = 0; k < n; k++) setTimeout(IOSH, k * 70); } };
+const HAP = (() => { const N = () => { try { return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics) || null; } catch (e) { return null; } }; const go = (style, fb) => { if (!save.haptics) return; const H = N(); if (H) { try { if (style === 'tick') H.selectionChanged(); else if (style === 'success') H.notification({ type: 'SUCCESS' }); else H.impact({ style: style === 'medium' ? 'MEDIUM' : 'LIGHT' }); return; } catch (e) {} } fb(); }; return { light: () => go('light', () => buzz(5)), medium: () => go('medium', () => buzz(9)), tick: () => go('tick', () => haptic(3)), success: () => go('success', () => haptic([6, 70, 6, 70, 10])) }; })();
 const buzz = ms => { if (!navigator.vibrate) { haptic(ms); return; } if (!save.haptics) return; try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
 
 
@@ -2531,7 +2534,7 @@ function landDrop(dp) {
     used.set(WATER, (used.get(WATER) || 0) + 1);
     wCount++; if (meanA[0] + meanA[1] + meanA[2] > 0) { meanA = meanA.map(v => v * WF); if (fluidOK) scaleDye(WF); idleT = 0; }
     ripples.push({ x: dp.x, t: 0, a: .45 }); for (let i = 0; i < 3; i++) bubbles.push({ x: dp.x + (Math.random() - 0.5) * 10, y: G.y0 + 6 + Math.random() * 20, r: 0.8 + Math.random() * 1.6, vy: 40 + Math.random() * 40, ph: Math.random() * 6 });
-    plink(WATER); buzz(6); updateStat(); return;
+    plink(WATER); HAP.light(); updateStat(); return;
   }
   const amt = d.a.map(v => v * DROP * Math.pow(WF, wCount));
   const oldTot = meanA[0] + meanA[1] + meanA[2];
@@ -3086,7 +3089,7 @@ function reveal() {
     day = dayNo(); ds = save.dlast === day - 1 ? (save.dstreak || 0) + 1 : save.dlast === day ? (save.dstreak || 1) : 1;
     save.dstreak = ds; save.dlast = day; save.daily = { d: day, p: pct }; extra = 0;
   }
-  const rankUp = rankOf(save.eye)[0] > rankOf(eye0)[0];
+  const rankUp = rankOf(save.eye)[0] > rankOf(eye0)[0]; if (rankUp) save.rkNew = rankOf(save.eye)[1];
   if (isRep && pct > REPLAY_BEST) { const dd = dayNo(), RM = save.remix && save.remix.d === dd ? save.remix : (save.remix = { d: dd, m: {} }), have = RM.m[target.name] || 0, g = Math.min(3 - have, Math.floor((pct - REPLAY_BEST) / 5)); if (g > 0) { RM.m[target.name] = have + g; save.chroma = (save.chroma || 0) + g; try { CARDS.earned(g, [['new best +' + Math.round(pct - REPLAY_BEST) + '%', g]]); } catch (e) {} } REPLAY_BEST = Math.max(REPLAY_BEST, pct); }
   if (!isRep) { const CB = []; let cg = 0; if (pct >= 50) { const tb = target.tier || 1, ab = pct >= 97 ? 4 : pct >= 85 ? 2 : pct >= 70 ? 1 : 0; cg = tb + ab + 1; CB.push(['match', 1]); CB.push(['difficulty', tb]); if (ab) CB.push(['accuracy', ab]); save.cStreak = (save.cStreak || 0) + 1; { const s = save.cStreak, sb = s >= 10 ? 5 : s >= 5 ? 3 : s >= 3 ? 2 : s >= 2 ? 1 : 0; if (sb) { cg += sb; CB.push(['streak ×' + s, sb]); } } if (pct >= 90 && drops > 0 && drops <= (target.drops || 99) + 2) { cg += 1; CB.push(['clean mix', 1]); } try { const pb = CARDS.pinBonus(target); if (pb) { cg += pb; CB.push(['pinned card', pb]); } } catch (e) {} if (daily) { cg *= 2; CB.push(['daily', '×2']); } } else save.cStreak = 0; if (cg) { save.chroma = (save.chroma || 0) + cg; try { CARDS.earned(cg, CB); } catch (e) {} } }
   if (!isRep && pct >= 70) { save.pk70 = (save.pk70 || 0) + 1; if (save.pk70 % 5 === 0) { const FP = save.freePk || (save.freePk = {}); FP.std = (FP.std || 0) + 1; setTimeout(() => { try { toast('free standard pack · open it in collection'); } catch (e) {} }, 2600); } }
@@ -3822,7 +3825,7 @@ function openRanks() {
   $('rkPanel').innerHTML = `<div class="rkh"><div><small>your rank</small></div><button class="rkx" aria-label="Close">×</button></div>` +
     `<div class="rkhero" style="--gc:${cur[2]}"><div class="rkring"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="${RR}" class="rkr0"/><circle cx="100" cy="100" r="${RR}" class="rkr1" style="--dash:${(CC * Math.max(.015, prg)).toFixed(1)};stroke-dasharray:${(CC * Math.max(.015, prg)).toFixed(1)} ${CC.toFixed(1)}"/></svg><div class="rkin"><span class="rkgem">${gemSVG(cur, 58)}</span><b class="rkeye">${fmtC(ey)}</b><small>${cur[1]}</small></div></div>` +
     `<div class="rknext">${ey >= 100 ? 'world ranked · ' + Math.round(save.wr || 0).toLocaleString('en-US') + ' world points' : nx2 ? `${(nx2[0] - ey).toFixed(1)} to <b style="color:${nx2[2]}">${nx2[1]}</b>` : `${(100 - ey).toFixed(1)} to world ranked`}</div>` +
-    `<div class="rkrow">${RANKS.map((r, i) => `<span class="rkchip${i < ci ? ' done' : i === ci ? ' cur' : ''}" style="--gc:${r[2]};--i:${i}" title="${r[1]} · ${r[0]}+">${gemSVG(r, 24)}</span>`).join('')}</div></div>` +
+    `<div class="rkrow">${RANKS.map((r, i) => `<span class="rkchip${i < ci ? ' done' : i === ci ? ' cur' : ''}${i === ci && save.rkNew === cur[1] ? ' fresh' : ''}" style="--gc:${r[2]};--i:${i}" title="${r[1]} · ${r[0]}+">${gemSVG(r, 24)}</span>`).join('')}</div></div>` +
     (() => { const P = chParts(); return `<div class="rkcap"><div class="rkbd"><span><small>colors</small><b>${P.n.toLocaleString('en-US')}<i> / ${ALLN.length.toLocaleString('en-US')}</i></b></span><span><small>accuracy</small><b>${Math.round(P.q * 100)}%</b></span><span><small>skill</small><b>${Math.round(P.sk * 100)}</b></span></div>your eye grows as you find more of the world's colors, match them well, and beat harder ones. find all ${ALLN.length.toLocaleString('en-US')} with great accuracy and you break 100.</div>`; })() +
     `<div class="lbw" id="lbW"><div class="lbh"><span>world leaderboard</span><small id="lbMe"></small></div><div id="lbL"><div class="lbmsg">loading the world…</div></div></div>` + (ACCOUNT.signedIn() ? '' : `<button class="lbcard lq" data-lb="1"><span><b>world leaderboard</b><small>make an account to join the world rankings and earn world awards.</small></span><span class="lbgo">sign in ›</span></button>`);
   (async () => { const L = $('lbL'); try { await SB.push(true); const [rows, me] = await Promise.all([SB.top(50), SB.myRank().catch(() => 0)]); if (!L.isConnected) return; const uid = SB.signedIn() ? (save.acct && save.acct.id) : null;
@@ -3830,6 +3833,7 @@ function openRanks() {
       L.querySelectorAll('.lbm').forEach((el, k) => el.textContent = (rows[k].name || 'player').toLowerCase());
       if (me) { $('lbMe').textContent = 'you · #' + me.toLocaleString('en-US'); try { checkBadges(-1); } catch (e) {} } }
     catch (e) { if (L.isConnected) L.innerHTML = '<div class="lbmsg">the leaderboard is offline right now. your progress is safe.</div>'; } })();
+  if (save.rkNew === cur[1]) { $('rkPanel').querySelector('.rkring').classList.add('fresh'); setTimeout(() => { try { HAP.success(); } catch (e) {} }, 500); save.rkNew = null; persist(); }
   sh.hidden = false; sh.querySelector('.rkx').onclick = () => { sh.hidden = true; }; sh.onclick = e => { if (e.target === sh) sh.hidden = true; else if (e.target.closest('[data-lb]')) { sh.hidden = true; openAccountSheet(false, 'lb'); } }; tick();
 }
 $('rkRow').addEventListener('click', openRanks); $('idSet').addEventListener('click', () => { $('setSheet').hidden = true; openIdSheet(false); });
@@ -4274,6 +4278,12 @@ const ATLAS = (() => {
     if (glowName) { const q = sp.find(q => ATLAS_DATA[q.i][0] === glowName); const e = (now - glowT) / 1000; if (q && e >= 0 && e < 6) { for (let k = 0; k < 2; k++) { const ph = ((e + k * .6) % 1.2) / 1.2; px.globalAlpha = (1 - ph) * .9; px.beginPath(); px.arc(q.X, q.Y, 6 + ph * 26, 0, Math.PI * 2); px.lineWidth = 1.5; px.strokeStyle = q.m ? q.m.h : '#fff'; px.stroke(); } } }
     px.globalAlpha = 1;
   }
+  function countryAt(x, y) { try { const W2 = view.clientWidth, H2 = view.clientHeight; const nx = (x - W2 / 2) / (H2 / 2) / F0, ny = -(y - H2 / 2) / (H2 / 2) / F0; const dx = nx, dy = ny, dz = -1, L = Math.hypot(dx, dy, dz), ox = 0, oy = 0, oz = zoom; const rx = dx / L, ry = dy / L, rz = dz / L; const b = 2 * (ox * rx + oy * ry + oz * rz), c = ox * ox + oy * oy + oz * oz - 1, disc = b * b - 4 * c; if (disc < 0) return null; const tt = (-b - Math.sqrt(disc)) / 2; let px = ox + rx * tt, py = oy + ry * tt, pz = oz + rz * tt;
+      const cx = Math.cos(rotX), sx = Math.sin(rotX), cy = Math.cos(rotY), sy = Math.sin(rotY); const y1 = py * cx + pz * sx, z1 = -py * sx + pz * cx; const x2 = px * cy - z1 * sy, z2 = px * sy + z1 * cy; const lat = Math.asin(Math.max(-1, Math.min(1, y1))) * 180 / Math.PI; let lng = Math.atan2(z2, -x2) * 180 / Math.PI - 180; lng = ((lng + 540) % 360) - 180;
+      const X = lat * 5, Y = lng * 5; let best = null, bestA = Infinity; for (const cc in OUTL) { for (const q of OUTL[cc]) { let inside = false, area = 0; const n = q.length / 2; for (let i = 0, j = n - 1; i < n; j = i++) { const xi = q[i * 2], yi = q[i * 2 + 1], xj = q[j * 2], yj = q[j * 2 + 1]; if (((yi > Y) !== (yj > Y)) && (X < (xj - xi) * (Y - yi) / (yj - yi) + xi)) inside = !inside; area += xi * yj - xj * yi; } if (inside && Math.abs(area) < bestA) { bestA = Math.abs(area); best = cc; } } } return best; } catch (e) { return null; } }
+  function showCountry(cc) { const name = cc === 'aq' ? 'antarctica' : (COUNTRY[cc] || cc).toLowerCase(); let P = null; try { P = countryProg()[cc]; } catch (e) {} const cs = getCountries().find(c => c.cc === cc), tot = cs ? cs.ns.length : 0; const got = {}; (save.palette || []).forEach(p => { if ((p.p || 0) >= 50) got[p.n] = 1; }); const k = cs ? cs.ns.filter(n => got[n]).length : 0; const md = P ? medalOf(P) : 0, ml = ['', 'bronze', 'silver', 'gold'][md];
+    card.innerHTML = `<div class="acrow"><div style="min-width:0;flex:1"><div class="anm">${name}</div><div class="apl">${FLAGS[cc] ? `<img class="aflag" alt="" src="${FLAGS[cc]}">` : ''}${tot ? `${k} of ${tot} color${tot > 1 ? 's' : ''} found${ml ? ' · ' + ml + ' ✦' : tot >= 3 ? '' : ''}` : 'no colors here yet'}</div></div></div>`;
+    card.hidden = false; card.style.animation = 'none'; void card.offsetWidth; card.style.animation = ''; tick(); buzz(4); }
   function showCard(q) {
     const r = ATLAS_DATA[q.i];
     if (!q.m) card.innerHTML = `${placeBadge(r, 'abig')}<div class="await">something waits in ${r[3]}</div>`;
@@ -4303,7 +4313,7 @@ const ATLAS = (() => {
         const r = view.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; let best = null, bd = 20;
         for (const q of sp) { const d = Math.hypot(q.X - x, q.Y - y) * (q.m ? 1 : 1.6); if (d < bd) { bd = d; best = q; } }
         const now = performance.now();
-        if (best && best.m) { const n = ATLAS_DATA[best.i][0]; ATLAS.flyTo(n, true); STORY.prep(n); showCard(best); } else if (best) showCard(best); else { if (!card.hidden) card.hidden = true; else if (now - lastTap < 320) zT = Math.max(1.35, zT * .62); lastTap = now; }
+        if (best && best.m) { const n = ATLAS_DATA[best.i][0]; ATLAS.flyTo(n, true); STORY.prep(n); showCard(best); } else if (best) showCard(best); else { const cc = countryAt(x, y); if (cc && card.hidden) { showCountry(cc); } else if (!card.hidden) card.hidden = true; else if (now - lastTap < 320) zT = Math.max(1.35, zT * .62); lastTap = now; }
       }
       drag = null;
     }
@@ -4453,7 +4463,7 @@ button:focus-visible{outline:2px solid rgb(var(--dna));outline-offset:2px}
 
 .track>.view:not(.on) *,.track>.view:not(.on){animation-play-state:paused!important}
 .track.drag>.view *{animation-play-state:paused!important}
-.cgrid .slot{transform:translateZ(0)}.cgrid .slot.offs *{animation-play-state:paused!important}
+.cgrid .slot{transform:translateZ(0)}.cb.pre{animation:prePulse .9s ease-in-out infinite;filter:drop-shadow(0 0 18px var(--glow))}@keyframes prePulse{50%{transform:scale(1.035)}}.cgrid .slot.offs *{animation-play-state:paused!important}
 .stage:not(.on) *{animation:none!important}
 .pinnote{margin:10px 2px 0;font:600 12px var(--f);color:rgba(255,255,255,.6)}.pinnote b{color:#fff}
 .acts .act{min-width:0;flex:1}
@@ -4809,13 +4819,14 @@ function tearOpen(pk,dir=1){const p=cur.p,r=pk.getBoundingClientRect();vib(30);$
   const order=cur.cards.slice().reverse(); // last appended sits on top -> first card (rarest) on top
   order.forEach((c,k)=>{const el=makeCard(c,{w:cw+'px'});const s=document.createElement('div');s.className='slotc';s.appendChild(el);s.style.zIndex=k;deck.appendChild(s);c._el=el;c._s=s;});
   const pkTop=r.top+r.height*.14, deckMid=innerHeight/2;
-  [...deck.children].forEach((s,k)=>{s.animate([{transform:`translateY(${pkTop-deckMid+cw*.7}px) scale(.62)`,clipPath:'inset(0 0 100% 0)'},{transform:`translateY(${pkTop-deckMid-40}px) scale(.7)`,clipPath:'inset(0 0 0 0)',offset:.55},{transform:`translateY(${(k-2)*-4}px) rotate(${(k-2)*2.5}deg)`}],{duration:1100,delay:250,easing:'cubic-bezier(.2,.8,.2,1)',fill:'both'});});
+  [...deck.children].forEach((s,k)=>{s.animate([{transform:`translateY(${pkTop-deckMid+cw*.7}px) scale(.62)`,clipPath:'inset(0 0 100% 0)'},{transform:`translateY(${pkTop-deckMid-40}px) scale(.7)`,clipPath:'inset(0 0 0 0)',offset:.55},{transform:`translate(${(k-1)*16}px,${(k-1)*-5}px) rotate(${(k-1)*6}deg)`}],{duration:1100,delay:250,easing:'cubic-bezier(.2,.8,.2,1)',fill:'both'});});
   pk.animate([{transform:pk.style.transform||'none',opacity:1},{transform:'translateY(70vh) rotate(8deg)',opacity:0}],{duration:800,delay:650,easing:'cubic-bezier(.5,0,.8,.4)',fill:'forwards'});
   const g=gen;setTimeout(()=>{if(g!==gen||!cur)return;$('#slotPack').innerHTML='';showTop();},1500);}
 function showTop(){if(!cur||!$('#stage').classList.contains('on'))return;const c=cur.cards[cur.i];$('#count').textContent=`${cur.i+1} of 3`;$('#hint').style.opacity=0;$('#dock').classList.remove('on');
   const el=c._el;el.style.setProperty('--glow',RAR[c.r].glow==='var(--c)'?c.hex:RAR[c.r].glow);
   // rarer backs pulse before the flip
-  interactive(el);if(cur.i>0)c._s.animate([{transform:'translateY(-18px) scale(.92) rotateX(18deg)',filter:'brightness(.6)'},{transform:'translateY(6px) scale(1.04)',filter:'brightness(1.25)',offset:.6},{transform:'none',filter:'brightness(1)'}],{duration:520,easing:'cubic-bezier(.2,.8,.2,1)'});reveal(c);}
+  interactive(el);if(cur.i>0)c._s.animate([{transform:'translateY(-18px) scale(.92) rotateX(18deg)',filter:'brightness(.6)'},{transform:'translateY(6px) scale(1.04)',filter:'brightness(1.25)',offset:.6},{transform:'none',filter:'brightness(1)'}],{duration:520,easing:'cubic-bezier(.2,.8,.2,1)'});const wait={holo:500,liquid:800,gold:1200,secret:1600}[c.r]||0;if(wait){el.classList.add('pre');const g=gen;cur._w=setTimeout(()=>{if(g!==gen||!cur)return;cur._w=null;el.classList.remove('pre');reveal(c);},wait);}else reveal(c);}
+{const z=$('#stage');if(z)z.addEventListener('pointerdown',()=>{if(cur&&cur._w){clearTimeout(cur._w);cur._w=null;const c=cur.cards[cur.i];if(c&&c._el){c._el.classList.remove('pre');reveal(c);}}},true);}
 function reveal(c){const el=c._el;el._rev=true;$('#hint').style.opacity=0;c._s.getAnimations().forEach(a=>{if(a.iterations===Infinity)a.cancel();});
   const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;const R=c.r;const S=$('#stage');
   const dur=R==='secret'?1600:R==='gold'?1100:R==='liquid'?800:420;

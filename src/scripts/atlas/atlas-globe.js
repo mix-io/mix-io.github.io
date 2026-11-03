@@ -165,6 +165,12 @@ const ATLAS = (() => {
     if (glowName) { const q = sp.find(q => ATLAS_DATA[q.i][0] === glowName); const e = (now - glowT) / 1000; if (q && e >= 0 && e < 6) { for (let k = 0; k < 2; k++) { const ph = ((e + k * .6) % 1.2) / 1.2; px.globalAlpha = (1 - ph) * .9; px.beginPath(); px.arc(q.X, q.Y, 6 + ph * 26, 0, Math.PI * 2); px.lineWidth = 1.5; px.strokeStyle = q.m ? q.m.h : '#fff'; px.stroke(); } } }
     px.globalAlpha = 1;
   }
+  function countryAt(x, y) { try { const W2 = view.clientWidth, H2 = view.clientHeight; const nx = (x - W2 / 2) / (H2 / 2) / F0, ny = -(y - H2 / 2) / (H2 / 2) / F0; const dx = nx, dy = ny, dz = -1, L = Math.hypot(dx, dy, dz), ox = 0, oy = 0, oz = zoom; const rx = dx / L, ry = dy / L, rz = dz / L; const b = 2 * (ox * rx + oy * ry + oz * rz), c = ox * ox + oy * oy + oz * oz - 1, disc = b * b - 4 * c; if (disc < 0) return null; const tt = (-b - Math.sqrt(disc)) / 2; let px = ox + rx * tt, py = oy + ry * tt, pz = oz + rz * tt;
+      const cx = Math.cos(rotX), sx = Math.sin(rotX), cy = Math.cos(rotY), sy = Math.sin(rotY); const y1 = py * cx + pz * sx, z1 = -py * sx + pz * cx; const x2 = px * cy - z1 * sy, z2 = px * sy + z1 * cy; const lat = Math.asin(Math.max(-1, Math.min(1, y1))) * 180 / Math.PI; let lng = Math.atan2(z2, -x2) * 180 / Math.PI - 180; lng = ((lng + 540) % 360) - 180;
+      const X = lat * 5, Y = lng * 5; let best = null, bestA = Infinity; for (const cc in OUTL) { for (const q of OUTL[cc]) { let inside = false, area = 0; const n = q.length / 2; for (let i = 0, j = n - 1; i < n; j = i++) { const xi = q[i * 2], yi = q[i * 2 + 1], xj = q[j * 2], yj = q[j * 2 + 1]; if (((yi > Y) !== (yj > Y)) && (X < (xj - xi) * (Y - yi) / (yj - yi) + xi)) inside = !inside; area += xi * yj - xj * yi; } if (inside && Math.abs(area) < bestA) { bestA = Math.abs(area); best = cc; } } } return best; } catch (e) { return null; } }
+  function showCountry(cc) { const name = cc === 'aq' ? 'antarctica' : (COUNTRY[cc] || cc).toLowerCase(); let P = null; try { P = countryProg()[cc]; } catch (e) {} const cs = getCountries().find(c => c.cc === cc), tot = cs ? cs.ns.length : 0; const got = {}; (save.palette || []).forEach(p => { if ((p.p || 0) >= 50) got[p.n] = 1; }); const k = cs ? cs.ns.filter(n => got[n]).length : 0; const md = P ? medalOf(P) : 0, ml = ['', 'bronze', 'silver', 'gold'][md];
+    card.innerHTML = `<div class="acrow"><div style="min-width:0;flex:1"><div class="anm">${name}</div><div class="apl">${FLAGS[cc] ? `<img class="aflag" alt="" src="${FLAGS[cc]}">` : ''}${tot ? `${k} of ${tot} color${tot > 1 ? 's' : ''} found${ml ? ' · ' + ml + ' ✦' : tot >= 3 ? '' : ''}` : 'no colors here yet'}</div></div></div>`;
+    card.hidden = false; card.style.animation = 'none'; void card.offsetWidth; card.style.animation = ''; tick(); buzz(4); }
   function showCard(q) {
     const r = ATLAS_DATA[q.i];
     if (!q.m) card.innerHTML = `${placeBadge(r, 'abig')}<div class="await">something waits in ${r[3]}</div>`;
@@ -194,7 +200,7 @@ const ATLAS = (() => {
         const r = view.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; let best = null, bd = 20;
         for (const q of sp) { const d = Math.hypot(q.X - x, q.Y - y) * (q.m ? 1 : 1.6); if (d < bd) { bd = d; best = q; } }
         const now = performance.now();
-        if (best && best.m) { const n = ATLAS_DATA[best.i][0]; ATLAS.flyTo(n, true); STORY.prep(n); showCard(best); } else if (best) showCard(best); else { if (!card.hidden) card.hidden = true; else if (now - lastTap < 320) zT = Math.max(1.35, zT * .62); lastTap = now; }
+        if (best && best.m) { const n = ATLAS_DATA[best.i][0]; ATLAS.flyTo(n, true); STORY.prep(n); showCard(best); } else if (best) showCard(best); else { const cc = countryAt(x, y); if (cc && card.hidden) { showCountry(cc); } else if (!card.hidden) card.hidden = true; else if (now - lastTap < 320) zT = Math.max(1.35, zT * .62); lastTap = now; }
       }
       drag = null;
     }

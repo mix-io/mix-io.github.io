@@ -92,7 +92,7 @@ button:focus-visible{outline:2px solid rgb(var(--dna));outline-offset:2px}
 
 .track>.view:not(.on) *,.track>.view:not(.on){animation-play-state:paused!important}
 .track.drag>.view *{animation-play-state:paused!important}
-.cgrid .slot{transform:translateZ(0)}.cgrid .slot.offs *{animation-play-state:paused!important}
+.cgrid .slot{transform:translateZ(0)}.cb.pre{animation:prePulse .9s ease-in-out infinite;filter:drop-shadow(0 0 18px var(--glow))}@keyframes prePulse{50%{transform:scale(1.035)}}.cgrid .slot.offs *{animation-play-state:paused!important}
 .stage:not(.on) *{animation:none!important}
 .pinnote{margin:10px 2px 0;font:600 12px var(--f);color:rgba(255,255,255,.6)}.pinnote b{color:#fff}
 .acts .act{min-width:0;flex:1}
@@ -448,13 +448,14 @@ function tearOpen(pk,dir=1){const p=cur.p,r=pk.getBoundingClientRect();vib(30);$
   const order=cur.cards.slice().reverse(); // last appended sits on top -> first card (rarest) on top
   order.forEach((c,k)=>{const el=makeCard(c,{w:cw+'px'});const s=document.createElement('div');s.className='slotc';s.appendChild(el);s.style.zIndex=k;deck.appendChild(s);c._el=el;c._s=s;});
   const pkTop=r.top+r.height*.14, deckMid=innerHeight/2;
-  [...deck.children].forEach((s,k)=>{s.animate([{transform:`translateY(${pkTop-deckMid+cw*.7}px) scale(.62)`,clipPath:'inset(0 0 100% 0)'},{transform:`translateY(${pkTop-deckMid-40}px) scale(.7)`,clipPath:'inset(0 0 0 0)',offset:.55},{transform:`translateY(${(k-2)*-4}px) rotate(${(k-2)*2.5}deg)`}],{duration:1100,delay:250,easing:'cubic-bezier(.2,.8,.2,1)',fill:'both'});});
+  [...deck.children].forEach((s,k)=>{s.animate([{transform:`translateY(${pkTop-deckMid+cw*.7}px) scale(.62)`,clipPath:'inset(0 0 100% 0)'},{transform:`translateY(${pkTop-deckMid-40}px) scale(.7)`,clipPath:'inset(0 0 0 0)',offset:.55},{transform:`translate(${(k-1)*16}px,${(k-1)*-5}px) rotate(${(k-1)*6}deg)`}],{duration:1100,delay:250,easing:'cubic-bezier(.2,.8,.2,1)',fill:'both'});});
   pk.animate([{transform:pk.style.transform||'none',opacity:1},{transform:'translateY(70vh) rotate(8deg)',opacity:0}],{duration:800,delay:650,easing:'cubic-bezier(.5,0,.8,.4)',fill:'forwards'});
   const g=gen;setTimeout(()=>{if(g!==gen||!cur)return;$('#slotPack').innerHTML='';showTop();},1500);}
 function showTop(){if(!cur||!$('#stage').classList.contains('on'))return;const c=cur.cards[cur.i];$('#count').textContent=`${cur.i+1} of 3`;$('#hint').style.opacity=0;$('#dock').classList.remove('on');
   const el=c._el;el.style.setProperty('--glow',RAR[c.r].glow==='var(--c)'?c.hex:RAR[c.r].glow);
   // rarer backs pulse before the flip
-  interactive(el);if(cur.i>0)c._s.animate([{transform:'translateY(-18px) scale(.92) rotateX(18deg)',filter:'brightness(.6)'},{transform:'translateY(6px) scale(1.04)',filter:'brightness(1.25)',offset:.6},{transform:'none',filter:'brightness(1)'}],{duration:520,easing:'cubic-bezier(.2,.8,.2,1)'});reveal(c);}
+  interactive(el);if(cur.i>0)c._s.animate([{transform:'translateY(-18px) scale(.92) rotateX(18deg)',filter:'brightness(.6)'},{transform:'translateY(6px) scale(1.04)',filter:'brightness(1.25)',offset:.6},{transform:'none',filter:'brightness(1)'}],{duration:520,easing:'cubic-bezier(.2,.8,.2,1)'});const wait={holo:500,liquid:800,gold:1200,secret:1600}[c.r]||0;if(wait){el.classList.add('pre');const g=gen;cur._w=setTimeout(()=>{if(g!==gen||!cur)return;cur._w=null;el.classList.remove('pre');reveal(c);},wait);}else reveal(c);}
+{const z=$('#stage');if(z)z.addEventListener('pointerdown',()=>{if(cur&&cur._w){clearTimeout(cur._w);cur._w=null;const c=cur.cards[cur.i];if(c&&c._el){c._el.classList.remove('pre');reveal(c);}}},true);}
 function reveal(c){const el=c._el;el._rev=true;$('#hint').style.opacity=0;c._s.getAnimations().forEach(a=>{if(a.iterations===Infinity)a.cancel();});
   const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;const R=c.r;const S=$('#stage');
   const dur=R==='secret'?1600:R==='gold'?1100:R==='liquid'?800:420;
