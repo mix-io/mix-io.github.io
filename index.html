@@ -8,7 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
 <style>@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
-html,body,*{touch-action:manipulation}</style>
+html,body,*{touch-action:manipulation}
+body.covered:not(.cine) #dock,body.covered:not(.cine) #scene,body.covered:not(.cine) .row.top,body.covered:not(.cine) .row.target{visibility:hidden}</style>
 <script>document.addEventListener('gesturestart',e=>{if(!(e.target&&e.target.closest&&e.target.closest('#aView')))e.preventDefault();},{passive:false});document.addEventListener('dblclick',e=>{if(!(e.target&&e.target.closest&&e.target.closest('#aView')))e.preventDefault();},{passive:false});</script>
 <style>
 [hidden]{display:none!important}
@@ -1668,7 +1669,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6ae95d8b'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6ae95eed'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
@@ -1989,7 +1990,7 @@ function navDrop(t) { const nv = $('nav'); if (!nv) return; let d = $('navDrop')
   d._x = x; d._w = w; }
 addEventListener('resize', () => { try { const d = $('navDrop'); if (d) d._x = null; navDrop(navMode); } catch (e) {} });
 function goTab(t) {
-  audio(); $('shop').hidden = true; $('settings').hidden = true; if (t !== 'cards') try { CARDS.shut(); } catch (e) {} if (t !== 'atlas') { $('atlas').hidden = true; ATLAS.close(); } $('coinVal').textContent = save.coins; coinShown = save.coins;
+  audio(); try { document.body.classList.toggle('covered', t === 'cards' || t === 'atlas' || t === 'you'); } catch (e) {} $('shop').hidden = true; $('settings').hidden = true; if (t !== 'cards') try { CARDS.shut(); } catch (e) {} if (t !== 'atlas') { $('atlas').hidden = true; ATLAS.close(); } $('coinVal').textContent = save.coins; coinShown = save.coins;
   if (t === 'home') { showHome(); setNav('home'); }
   else if (t === 'play') { if (!$('home').hidden) $('hPlay').click(); setNav('play'); }
   else if (t === 'atlas') { $('atlas').hidden = false; tabIn($('atlas')); ATLAS.open(); setNav('atlas'); }
@@ -3577,8 +3578,9 @@ function renderDNA() {
   DNA.P = []; const n = DNA.G ? 0 : Math.round(clamp(500 + dpg * 70, 550, 1300)); for (let i = 0; i < n; i++) { const r = Math.pow(Math.random(), .55), th = Math.random() * 6.283, ph = Math.acos(2 * Math.random() - 1); DNA.P.push({ r, th, ph, w: (.15 + Math.random() * .55) * (Math.random() < .5 ? -1 : 1), br: .6 + Math.random() * 2.2, bp: Math.random() * 6.28, s: pick(), sz: .25 + Math.random() * .5, tw: Math.random() * 6.28 }); }
   if (!DNA.raf) DNA.raf = requestAnimationFrame(dnaLoop);
 }
+try { const er = document.getElementById('eRing'); if (er && window.IntersectionObserver) new IntersectionObserver(es => { DNA.vis = es[0].isIntersecting; if (DNA.vis && !DNA.raf && DNA.cv) DNA.raf = requestAnimationFrame(dnaLoop); }, { threshold: 0 }).observe(er); } catch (e) {}
 function dnaLoop(now) {
-  DNA.raf = 0; const cv = DNA.cv; if (!cv || !cv.isConnected || ((($('settings').hidden) || !$('settings').contains(cv)) && ($('home').hidden || !$('hBlob').contains(cv)) && !($('wBlob') && $('wBlob').contains(cv))) || document.hidden) return; DNA.raf = requestAnimationFrame(dnaLoop);
+  DNA.raf = 0; const cv = DNA.cv; if (DNA.vis === false && !$('settings').hidden && $('settings').contains(cv)) return; if (!cv || !cv.isConnected || ((($('settings').hidden) || !$('settings').contains(cv)) && ($('home').hidden || !$('hBlob').contains(cv)) && !($('wBlob') && $('wBlob').contains(cv))) || document.hidden) return; DNA.raf = requestAnimationFrame(dnaLoop);
   const x = DNA.G && cv === DNA.G.cv ? null : cv.getContext('2d'), N = cv.width, c = N / 2, R = N * .33, t = now / 1000, red = matchMedia('(prefers-reduced-motion: reduce)').matches, dt = Math.min(.05, DNA.lt ? (now - DNA.lt) / 1000 : .016); DNA.lt = now;
   if (!DNA.drag) { DNA.wy += ((red ? 0 : .22) - DNA.wy) * (1 - Math.exp(-dt * 1.6)); DNA.wx += (0 - DNA.wx) * (1 - Math.exp(-dt * 1.1)); DNA.wx = clamp(DNA.wx, -3.2, 3.2); DNA.wy = clamp(DNA.wy, -3.2, 3.2); dnaRot(DNA.wx * dt, DNA.wy * dt); DNA.yaw += DNA.wy * dt; }
   { const tx = DNA.press * .1, ty = -DNA.press * .08; for (const [a, v] of [['sqx', 'svx'], ['sqy', 'svy']]) { const tg = a === 'sqx' ? tx : ty, acc = (tg - DNA[a]) * 48 - DNA[v] * 3.4; DNA[v] += acc * dt; DNA[a] += DNA[v] * dt; DNA[a] = clamp(DNA[a], -.38, .5); } }
@@ -3700,7 +3702,7 @@ let last = performance.now(), coinShown = save.coins, focusA = 1, idleT = 0, per
 function frame(now) {
   const dt = Math.min((now - last) / 1000, 1 / 30); last = now;
   if (!SW && !computeLayout()) { requestAnimationFrame(frame); return; }
-  if ((!homeEl.hidden && !homeEl.classList.contains('bye')) || !atlasEl.hidden || !$('settings').hidden) { last = now; requestAnimationFrame(frame); return; }
+  if ((!homeEl.hidden && !homeEl.classList.contains('bye')) || !atlasEl.hidden || !$('settings').hidden || window.__kOn) { last = now; requestAnimationFrame(frame); return; }
 
   // stirring by hand
   if (gp && gp.stir && state === 'play') {
@@ -4118,6 +4120,11 @@ button:focus-visible{outline:2px solid rgb(var(--dna));outline-offset:2px}
 .seg .lens.drag{transition:none;transform-origin:center}
 .seg .lens::after{content:"";position:absolute;left:12%;right:12%;top:2px;height:40%;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0));opacity:.6}
 .seg button.hov{color:#fff}
+
+.track>.view:not(.on) *,.track>.view:not(.on){animation-play-state:paused!important}
+.track.drag>.view *{animation-play-state:paused!important}
+.cgrid .slot{content-visibility:auto;contain-intrinsic-size:auto 160px}
+.stage:not(.on) *{animation:none!important}
 .empty{font-size:13px;color:var(--mut);text-align:center;padding:10px 0 0}
 
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
@@ -4419,7 +4426,7 @@ const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p);}catch(e){}};
 let cur=null;
 function openPack(p){if(st.bal<p.cost)return;setBal(-p.cost);cur={p,cards:roll(p),i:0,res:[]};
   const S=$('#stage');S.style.setProperty('--s1',p.sw[0]);S.style.setProperty('--s2',p.sw[1]);S.style.setProperty('--s3',p.sw[2]);
-  host.classList.add('kstage');S.classList.add('on');sizeFx();BG.start(p.fp);$('#deck').innerHTML='';$('#sum').classList.remove('on');$('#dock').classList.remove('on');$('#rl').style.opacity=0;$('#count').textContent='';
+  host.classList.add('kstage');S.classList.add('on');sizeFx();setTimeout(()=>{if(S.classList.contains('on'))BG.start(p.fp);},720);$('#deck').innerHTML='';$('#sum').classList.remove('on');$('#dock').classList.remove('on');$('#rl').style.opacity=0;$('#count').textContent='';
   $('#hint').textContent='swipe across the pack to open';$('#hint').style.opacity=1;
   const W=Math.min(innerWidth*.56,230);$('#deck').style.setProperty('--cw',Math.min(innerWidth*.72,300)+'px');
   const pk=document.createElement('div');pk.className='packbig';pk.innerHTML=`${packArt(p)}<div class="cap">${packArt(p)}</div><div class="tear"></div><div class="arrow"></div>`;
@@ -4499,7 +4506,7 @@ function inspect(c){const S=$('#stage');S.style.setProperty('--s1','rgba(65,227,
     if(!st.own[c.no]){s.animate([{opacity:1},{opacity:0,transform:'scale(1.1)',filter:'blur(8px)'}],{duration:450,fill:'forwards'});setTimeout(closeStage,460);}else inspect(c);};
   $('#dock').classList.add('on');}
 /* ---------- collection ---------- */
-function renderCol(){const g=$('#cgrid');g.innerHTML='';let have=0;
+let colSig='';function renderCol(){const g=$('#cgrid');const sg=JSON.stringify(st.own);if(sg===colSig&&g.children.length)return;colSig=sg;g.innerHTML='';let have=0;
   SET.forEach(c=>{const n=st.own[c.no]||0;if(c.no<=50&&n)have++;if(c.no===51&&!n)return;
     const b=document.createElement('button');b.className='slot';
     if(n){const el=makeCard(c);b.appendChild(el);if(n>1)b.insertAdjacentHTML('beforeend',`<span class="qty">×${n}</span>`);b.onclick=()=>inspect(c);b.setAttribute('aria-label',c.n);}
@@ -4510,7 +4517,7 @@ function renderCol(){const g=$('#cgrid');g.innerHTML='';let have=0;
 
 function lens(v){const b=R.querySelector(`.seg button[data-s="${v}"]`),L=R.querySelector('.seg .lens');if(!b||!L||!b.offsetWidth)return;L.style.width=b.offsetWidth+'px';L.style.transform=`translateX(${b.offsetLeft}px)`;}
 let ppI=0,ppN=0;
-function renderPP(){const B=$('#book');const got={};(save.palette||[]).forEach(p=>{if((p.p||0)>=50)got[p.n]=p;});let CP={};try{CP=countryProg();}catch(e){}
+let ppSig='';function renderPP(){const B=$('#book');{const pl=save.palette||[],sg=pl.length+'|'+(save.level||1)+'|'+(save.eye||0)+'|'+pl.reduce((a,p)=>a+(p.p||0),0).toFixed(1);if(sg===ppSig&&B.children.length)return;ppSig=sg;}const got={};(save.palette||[]).forEach(p=>{if((p.p||0)>=50)got[p.n]=p;});let CP={};try{CP=countryProg();}catch(e){}
  const cs=getCountries().map(c=>{const f=c.ns.filter(n=>got[n]);return{c,f,p:CP[c.cc],d:f.reduce((m,n)=>Math.min(m,got[n].d||Infinity),Infinity)};}).filter(x=>x.f.length).sort((a,b)=>((b.p&&b.p.done)?1:0)-((a.p&&a.p.done)?1:0)||b.f.length-a.f.length);
  let name='player';try{name=(SB.uname()||(save.idn&&save.idn.name)||'player');}catch(e){}
  let dna='#7fd7ff';try{const c=idColor(save.idn);dna='#'+c.map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('');}catch(e){}
