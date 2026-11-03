@@ -561,7 +561,7 @@ body.cine #nav{pointer-events:none}
 /* overlays */
 .ov{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);animation:ovIn .5s cubic-bezier(.45,0,.55,1) both}
 @keyframes ovIn{0%{opacity:1;transform:none}100%{opacity:1;transform:none}}
-.ov>*{animation:ovKid .42s cubic-bezier(.2,.8,.25,1) both}
+.ov>*{animation:ovKid .42s cubic-bezier(.2,.8,.25,1) backwards}
 @keyframes ovKid{0%{opacity:0;transform:translate3d(0,8px,0)}100%{opacity:1;transform:none}}
 .ov-head{display:flex;align-items:center;justify-content:space-between;padding-block:12px 6px}
 .ov-title{font-size:20px;font-weight:600;letter-spacing:-.02em}
@@ -912,7 +912,6 @@ select.idin{background-image:linear-gradient(180deg,rgba(255,255,255,.08),rgba(2
 }
 
 .wel{position:absolute;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(120% 80% at 50% 0%,#0f1a24 0%,#07090c 55%,#040506 100%)}
-.wel>*:not(.wbg){animation:ovKid .5s cubic-bezier(.2,.8,.25,1) both}
 .wel.out{animation:welOut .9s cubic-bezier(.6,0,.2,1) forwards}
 @keyframes welOut{to{opacity:0;transform:scale(1.04)}}
 .wel .wbg{position:absolute;inset:-20%;pointer-events:none;background:radial-gradient(40% 30% at 30% 30%,rgba(var(--wc,120,200,255),.16),transparent 70%),radial-gradient(35% 28% at 72% 70%,rgba(var(--wc,120,200,255),.12),transparent 70%);filter:blur(30px);animation:welDrift 14s ease-in-out infinite alternate;transition:background 1.2s}
@@ -1265,6 +1264,32 @@ body.bgp .hbg{filter:brightness(.6) saturate(.9)}
   </div>
 </div>
 
+<style>
+/* ===== darker, neutral welcome + onboarding ===== */
+.wel{background:radial-gradient(120% 90% at 50% 38%,rgba(13,13,15,.92) 0%,rgba(5,5,6,.97) 60%,#000 100%)!important}
+.wbg{--wc:180,182,190!important;opacity:.22!important}
+.wwm::after{background:radial-gradient(closest-side,rgba(255,255,255,.1),transparent)!important}
+.wel .wk{color:rgba(255,255,255,.4)!important}
+.wel h1{background:linear-gradient(180deg,#fff 25%,#b3b6bd)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important}
+.wdrop{background:radial-gradient(circle at 35% 35%,#fff,#c6c9d0 60%,#767c86)!important}
+.wrip{border-color:rgba(255,255,255,.3)!important}
+.wdots i.on{background:rgba(255,255,255,.8)!important}
+.wel .primary{background:linear-gradient(180deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.06) 48%,rgba(255,255,255,.02) 52%,rgba(255,255,255,.05) 100%),rgba(14,14,16,.6)!important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.5),inset 0 -1.5px 1px rgba(255,255,255,.12),inset 0 0 0 .6px rgba(255,255,255,.2),inset 0 10px 14px -10px rgba(255,255,255,.3),0 14px 30px -14px rgba(0,0,0,.85),0 4px 14px -2px rgba(0,0,0,.5)!important}
+.wel .idin{caret-color:#fff!important;transition:box-shadow .3s,background .3s}
+.wel .idin:focus{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.04))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 0 0 .5px rgba(255,255,255,.28),0 0 0 4px rgba(255,255,255,.05)!important}
+/* ===== one press feel everywhere ===== */
+.primary,.icon-btn,.rkx,.rkrow,.ppback,.round,.mxlink,.mxbring,.mxdel,.idrow,.hintopt,.sx,.shareic,.rnew,.ppset,.ppc,.jbtn,.lbcard,.tog,.yes,.no,.idgo,.twm,.sharebtn,.bmore{transition:transform .38s cubic-bezier(.3,1.5,.45,1),background .25s,box-shadow .25s,opacity .25s!important;-webkit-tap-highlight-color:transparent}
+.primary:active,.icon-btn:active,.rkx:active,.rkrow:active,.ppback:active,.round:active,.mxlink:active,.mxbring:active,.mxdel:active,.idrow:active,.hintopt:active,.sx:active,.shareic:active,.rnew:active,.ppset:active,.ppc:active,.jbtn:active,.lbcard:active,.yes:active,.no:active,.idgo:active,.twm:active,.sharebtn:active,.bmore:active{transform:scale(.95)!important;transition-duration:.12s!important}
+.tog:active{transform:scale(.985)!important}
+/* ===== liquid switches ===== */
+.sw{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 .5px rgba(255,255,255,.14),inset 0 -6px 10px -8px rgba(0,0,0,.6)!important;transition:background .35s,box-shadow .35s!important}
+.sw.on{background:radial-gradient(120% 120% at 30% 0%,rgba(255,255,255,.35),transparent 55%),rgb(var(--dna-rgb))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -6px 10px -8px rgba(0,0,0,.35),0 0 14px rgba(var(--dna-rgb),.35)!important}
+.sw::after{background:radial-gradient(circle at 35% 28%,#fff,#eef1f4 55%,#c9ced5)!important;box-shadow:0 2px 6px rgba(0,0,0,.45),inset 0 -1px 2px rgba(0,0,0,.12)!important;transition:transform .5s cubic-bezier(.3,1.6,.45,1),width .25s cubic-bezier(.3,1.4,.5,1),margin .25s!important}
+.sw:active::after{width:28px!important}
+.sw.on:active::after{margin-left:-6px}
+/* ===== scrolling ===== */
+.ov-body,.panel,.rkpanel,.jpc,.gal{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+</style>
 <script>
 window.addEventListener('error', e => { try { (window.__errs = window.__errs || []).push(String(e.message).slice(0, 200)); if (!/[?&#]debug/.test(location.href) || /^script error\.?$/i.test(String(e.message || '').trim())) return; let b = document.getElementById('errBox'); if (!b) { b = document.createElement('div'); b.id = 'errBox'; b.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:#300;color:#fbb;font:11px monospace;padding:8px;border-radius:8px;white-space:pre-wrap'; document.body.appendChild(b); } b.textContent = 'error: ' + e.message + ' @' + e.lineno + ':' + e.colno; } catch (x) {} });
 (() => {
@@ -1620,7 +1645,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6ae95779'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6ae95869'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
@@ -1848,7 +1873,7 @@ const HOMEBG = (() => {
   const fg = { tx: 0, ty: 0, x: 0, y: 0, px: 0, py: 0, on: false, fresh: true, dyeT: 0 };
   const EM = [[23, 31, 0, 1.3], [29, 19, 2.1, .4], [37, 26, 4.2, 2.8], [18, 40, 1.1, 5.0], [33, 22, 3.3, 3.9]].map(([tx, ty, a, b], i) => ({ tx, ty, a, b, sp: 6 + i, next: 1 + i * .45 }));
   const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function palette() { if (save.idn) { const c = idColor(save.idn), L = (c[0] + c[1] + c[2]) / 3, comp = c.map(v => clamp(L * 2 - v, 0, 1)), g = [.56, .6, .66]; BRIGHT = .78; return [g, [.3, .34, .4], comp.map((v, k) => v * .45 + g[k] * .55), [.42, .46, .52], c.map((v, k) => v * .25 + g[k] * .75)]; } const d = save.fav != null && DYES[save.fav] && !DYES[save.fav].water ? DYES[save.fav] : null; if (!d) { BRIGHT = 1.0; return [[.32, .82, 1], [.18, .55, .95], [.36, .95, .78], [.62, .9, 1]]; } BRIGHT = .72; const c = d.rgb; return [c, c.map(v => v * .72), c.map(v => Math.min(1, v * 1.08 + .04))]; }
+  function palette() { if (save.idn) { const c = idColor(save.idn), L = (c[0] + c[1] + c[2]) / 3, comp = c.map(v => clamp(L * 2 - v, 0, 1)), g = [.56, .6, .66]; BRIGHT = .78; return [g, [.3, .34, .4], comp.map((v, k) => v * .45 + g[k] * .55), [.42, .46, .52], c.map((v, k) => v * .25 + g[k] * .75)]; } const d = save.fav != null && DYES[save.fav] && !DYES[save.fav].water ? DYES[save.fav] : null; if (!d) { BRIGHT = .62; return [[.62, .64, .7], [.36, .38, .44], [.5, .56, .62], [.72, .72, .76]]; } BRIGHT = .72; const c = d.rgb; return [c, c.map(v => v * .72), c.map(v => Math.min(1, v * 1.08 + .04))]; }
   function build() {
     const L = Object.assign({}, LV[lvl], FL), H = $('home'); if (!cv) { cv = document.createElement('canvas'); cv.className = 'hbg'; H.insertBefore(cv, H.firstChild); }
     cv.width = Math.max(64, Math.round(innerWidth * L.sc)); cv.height = Math.max(64, Math.round(innerHeight * L.sc));
