@@ -699,11 +699,11 @@ const wrapI = i => ((i % N) + N) % N, wrapK = k => { k = ((k + N / 2) % N + N) %
 function dialClick() { if (!actx || save.muted) return; try { const t = actx.currentTime, o = actx.createOscillator(), g = actx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(2400, t); o.frequency.exponentialRampToValueAtTime(1200, t + .02); g.gain.setValueAtTime(.025, t); g.gain.exponentialRampToValueAtTime(.0001, t + .03); o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + .035); } catch (e) {} }
 function layoutDial() {
   const half = Math.max(120, strip.clientWidth / 2), SP = DIAL.SP, dt = DIAL.ldt || .016, kk = 1 - Math.exp(-dt * 20);
-  const fT = DIAL.drag ? clamp(DIAL.drag.x - (strip.getBoundingClientRect().left + strip.clientWidth / 2), -half, half) : 0; DIAL.fx = (DIAL.fx || 0) + (fT - (DIAL.fx || 0)) * (1 - Math.exp(-dt * (DIAL.drag ? 26 : 9))); const fx = DIAL.fx; let busy = Math.abs(fT - fx) > .5;
+  const fT = 0; DIAL.fx = (DIAL.fx || 0) + (fT - (DIAL.fx || 0)) * (1 - Math.exp(-dt * (DIAL.drag ? 26 : 9))); const fx = DIAL.fx; let busy = Math.abs(fT - fx) > .5;
   for (let i = 0; i < N; i++) { const k = wrapK(i - DIAL.p), x0 = SP * (.66 * k + .62 * Math.tanh(k * .85)), b = beads[i];
     if (Math.abs(x0) > half + 24) { if (b.style.visibility !== 'hidden') b.style.visibility = 'hidden'; b._s = .5; continue; }
     if (b.style.visibility) b.style.visibility = '';
-    const d = x0 - fx, m = Math.exp(-d * d / (SP * SP * 1.35)), x = x0 + Math.sign(d) * SP * .55 * (1 - Math.exp(-Math.abs(d) / SP)) * (.4 + .6 * Math.exp(-fx * fx / (SP * SP * 9))), tS = .5 + .82 * m;
+    const d = x0 - fx, m = Math.exp(-d * d / (SP * SP * 1.35)), x = x0 + Math.sign(d) * SP * .3 * (1 - Math.exp(-Math.abs(d) / SP)) * (.4 + .6 * Math.exp(-fx * fx / (SP * SP * 9))), tS = .5 + .82 * m;
     b._s = b._s == null ? tS : b._s + (tS - b._s) * kk; if (Math.abs(tS - b._s) > .003) busy = true; const sc = b._s, t = Math.min(1, Math.abs(x) / half), y = 26 * (1.32 - sc) - 2;
     b.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) scale(${sc.toFixed(3)})`; b.style.opacity = (1 - .6 * t * t).toFixed(3); b.style.zIndex = String(100 - Math.round(Math.abs(d) / SP * 10)); }
   DIAL.busy = busy;
@@ -726,7 +726,7 @@ const dialUp = e => { const d = DIAL.drag; if (!d || d.id !== e.pointerId) retur
   if (performance.now() - d.t > 90) DIAL.v = 0;
   if (d.moved < 7) { DIAL.v = 0; const el = d.tgtEl, i = el ? beads.indexOf(el) : -1;
     if (i >= 0) { el.animate([{ filter: 'brightness(1.25)' }, { filter: 'none' }], { duration: 260 });
-      if (i === sel && Math.abs(wrapK(i - DIAL.p)) < .3) { buzz(6); addDrop(G.cx + (Math.random() - 0.5) * G.ww * 0.45); DIAL.tgt = Math.round(DIAL.p); }
+      if (i === sel && Math.abs(wrapK(i - DIAL.p)) < .3) { DIAL.tgt = Math.round(DIAL.p); }
       else DIAL.tgt = DIAL.p + wrapK(i - DIAL.p); }
     else DIAL.tgt = Math.round(DIAL.p); }
   DIAL.v = Math.max(-46, Math.min(46, DIAL.v)); dialKick(); };
