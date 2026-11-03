@@ -18,7 +18,7 @@ function shareDaily(btn) {
   const ok = () => { if (btn) { const o = btn.textContent; btn.textContent = 'copied ✓'; setTimeout(() => btn.textContent = o, 1300); } };
   if (navigator.share) navigator.share({ text: txt }).catch(() => {}); else try { navigator.clipboard.writeText(txt).then(ok, ok); } catch (e) { ok(); }
 }
-function resetGlass() { $('shareIc').hidden = true; $('res').hidden = true; $('rev').hidden = true; SPLIT = null; GLOW = null; holdCoins = false; state = 'play'; auto = null; emptyGlass(true); DRIP.clearTint(); }
+function resetGlass() { try { clearRevT(); nexting = false; } catch (e) {} $('shareIc').hidden = true; $('res').hidden = true; $('rev').hidden = true; SPLIT = null; GLOW = null; holdCoins = false; state = 'play'; auto = null; emptyGlass(true); DRIP.clearTint(); }
 function dailyCD() { const n = Date.now(), m = (Date.UTC(2026, 10, 1) + dayNo() * 864e5) - n, h = Math.floor(m / 3.6e6), mm = Math.floor(m / 6e4) % 60; const el = document.querySelector('#hDaily .dcd'); if (el) { const dd = save.daily && save.daily.d === dayNo() && save.daily.beat != null ? `beat ${save.daily.beat}% of the world · ` : ''; el.textContent = `${dd}next in ${h}h ${String(mm).padStart(2, '0')}m`; } }
 setInterval(() => { if (!$('home').hidden) dailyCD(); }, 30000);
 function dnaToHome() { try { const G = dnaGL(); if (!G) return; if (!DNA.sig) { DNA.sig = dnaAccent() || [.7, .74, .8]; DNA.energy = DNA.energy || 1; DNA.speed = DNA.speed || 1; } const hb = $('hBlob'); if (G.cv.parentNode !== hb) hb.appendChild(G.cv); DNA.cv = G.cv; if (!DNA.raf) DNA.raf = requestAnimationFrame(dnaLoop); } catch (e) {} }
@@ -34,9 +34,9 @@ function showHome() { try { let bl = $('hBday'); if (isBday()) { if (!bl) { bl =
   setTimeout(() => { try { HRING.show(); } catch (e) {} }, 30);
   const dDone = save.daily && save.daily.d === day, hd = $('hDaily'); hd.classList.toggle('done', !!dDone); hd.disabled = !!dDone; hd.querySelector('.ddot').style.setProperty('--c', css(dailyTarget(day).rgb)); const dt0 = dailyTarget(day); hd.querySelector('.dlab').textContent = (dDone ? '✓ ' : '') + 'daily · ' + dt0.name; dailyCD();
   $('hPlay').textContent = (started || save.level > 1 || (save.stats && save.stats.n)) ? 'continue' : 'play';
-  const h = $('home'); h.classList.remove('bye'); h.hidden = false;
+  const h = $('home'); clearTimeout(h._hT); clearTimeout(h._hF); h._hT = h._hF = 0; h.classList.remove('bye'); h.hidden = false;
 }
-function hideHome() { const h = $('home'); h.classList.add('bye'); setTimeout(() => HOMEBG.free(), 520); setTimeout(() => { h.hidden = true; h.classList.remove('bye'); }, 500); }
+function hideHome() { const h = $('home'); if (h.hidden || h.classList.contains('bye')) return; h.classList.add('bye'); clearTimeout(h._hT); clearTimeout(h._hF); h._hF = setTimeout(() => HOMEBG.free(), 520); h._hT = setTimeout(() => { h.hidden = true; h.classList.remove('bye'); h._hT = 0; }, 500); }
 
 /* ================= Scene geometry ================= */
 const scene = $('scene'), bgC = $('bg'), fgC = $('fg'), fluidC = $('fluid');

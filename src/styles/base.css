@@ -1,7 +1,9 @@
 <style>:root{--spring-snap:cubic-bezier(.34,1.35,.5,1);--spring-soft:cubic-bezier(.22,1,.36,1);--ease-io:cubic-bezier(.45,0,.55,1);--fs-1:11px;--fs-2:12.5px;--fs-3:14px;--fs-4:17px;--fs-5:22px;--fs-6:34px;--r-1:4px;--r-2:8px;--r-3:14px;--r-4:20px;--r-5:30px}@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
 html,body,*{touch-action:manipulation}
 
-.cfing{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;pointer-events:none;z-index:5;opacity:0;background:radial-gradient(circle at 40% 35%,rgba(255,255,255,.95),rgba(255,255,255,.55) 45%,rgba(255,255,255,.12) 70%,transparent 72%);box-shadow:0 0 0 1.5px rgba(255,255,255,.6),0 8px 20px rgba(0,0,0,.45);transition:opacity .3s}
+.cfing{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;pointer-events:none;z-index:5;opacity:0;background:radial-gradient(circle at 40% 35%,rgba(255,255,255,.95),rgba(255,255,255,.55) 45%,rgba(255,255,255,.12) 70%,transparent 72%);box-shadow:0 0 0 1px rgba(255,255,255,.6),0 8px 20px rgba(0,0,0,.45);transition:opacity .32s var(--ease-io)}
+.cfing::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(255,255,255,.5);opacity:0;pointer-events:none}
+.cfing.g-hold::after{animation:fHoldRing 2s ease-in-out infinite}
 .cfing.g-swipe{opacity:1;animation:fSwipe 1.6s var(--ease-io) infinite}
 .cfing.g-tap{opacity:1;animation:fTap 1.2s ease-in-out infinite}
 .cfing.g-stir{opacity:1;animation:fStir 1.8s linear infinite}
@@ -9,7 +11,8 @@ html,body,*{touch-action:manipulation}
 @keyframes fSwipe{0%{transform:translateX(60px) scale(.9);opacity:0}15%{opacity:1;transform:translateX(60px) scale(.82)}70%{transform:translateX(-60px) scale(.82);opacity:1}100%{transform:translateX(-60px) scale(.95);opacity:0}}
 @keyframes fTap{0%,100%{transform:scale(1);opacity:.9}35%{transform:scale(.72);opacity:1}55%{transform:scale(1.05)}}
 @keyframes fStir{0%{transform:rotate(0deg) translateX(34px) rotate(0deg) scale(.82)}100%{transform:rotate(360deg) translateX(34px) rotate(-360deg) scale(.82)}}
-@keyframes fHold{0%{transform:scale(1);box-shadow:0 0 0 1.5px rgba(255,255,255,.6),0 0 0 0 rgba(255,255,255,.5)}30%,75%{transform:scale(.75);box-shadow:0 0 0 1.5px rgba(255,255,255,.6),0 0 0 18px rgba(255,255,255,0)}100%{transform:scale(1)}}
+@keyframes fHold{0%{transform:scale(1)}30%,75%{transform:scale(.75)}100%{transform:scale(1)}}
+@keyframes fHoldRing{0%{opacity:.6;transform:scale(1)}30%,75%{opacity:0;transform:scale(1.8)}100%{opacity:0;transform:scale(1.8)}}
 .dwh{display:flex;align-items:flex-end;gap:2px;height:34px;margin:8px auto 0;width:min(240px,70vw)}
 .dwh i{flex:1;border-radius:4px 4px 0 0;background:rgba(255,255,255,.18);min-height:2px;transition:height .8s var(--spring-soft)}
 .dwh i.me{background:rgb(var(--dna-rgb));box-shadow:0 0 10px rgba(var(--dna-rgb),.7)}
@@ -18,13 +21,13 @@ html,body,*{touch-action:manipulation}
 @keyframes wrise{to{opacity:1;transform:none}}
 .wel .wplay.wlate i{order:-1;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5) 0 3px,transparent 4px),radial-gradient(circle,transparent 55%,rgba(255,255,255,.35) 57%,transparent 62%);box-shadow:none;animation:wtouch 1.8s ease-out infinite}
 @keyframes wtouch{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.5);opacity:0}}
-.wel .wplay.wlate::after{content:"";display:block;width:120px;height:3px;border-radius:4px;background:linear-gradient(90deg,rgba(255,255,255,.85) calc(var(--wp,0)*100%),rgba(255,255,255,.12) calc(var(--wp,0)*100%));transition:background .15s}
+.wel .wplay.wlate::after{content:"";display:block;width:120px;height:3px;border-radius:4px;background:linear-gradient(90deg,rgba(255,255,255,.85) calc(var(--wp,0)*100%),rgba(255,255,255,.12) calc(var(--wp,0)*100%));transition:background .18s var(--ease-io)}
 .wel .wplay.nudge{animation:wrise 1.2s 1s var(--spring-soft) forwards,wnudge 1.6s 5s ease-in-out infinite}
 @keyframes wnudge{50%{color:#fff;text-shadow:0 0 22px rgba(255,255,255,.6)}}
 .wel .wplay.done{opacity:0!important;transform:translateY(-10px)!important;transition:opacity .6s .4s,transform .6s .4s;animation:none}
-.wbeg.wait .lq{animation:none!important;transition:height .18s ease-out}
-.apc{display:flex;flex-direction:column;gap:18px;margin-top:6px}
-.apgh{display:flex;align-items:center;gap:9px;margin:0 2px 8px}
+.wbeg.wait .lq{animation:none!important;transition:height .18s var(--ease-io)}
+.apc{display:flex;flex-direction:column;gap:16px;margin-top:4px}
+.apgh{display:flex;align-items:center;gap:8px;margin:0 2px 8px}
 .apgh img{width:24px;height:17px;border-radius:4px;object-fit:cover;box-shadow:0 0 0 .5px rgba(255,255,255,.25)}
 .apgh i{width:24px;height:17px;border-radius:4px;background:linear-gradient(135deg,#2a6fb0,#123a66)}
 .apgh b{font:700 14px var(--f-ui);color:#fff}

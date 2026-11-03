@@ -245,7 +245,14 @@ function pourFX(c, tc, S, k) {
   }
   if (t > .62 && t < 1.1) for (let i = 0; i < 3; i++) { const dt0 = t - .66 - i * .07; if (dt0 < 0) continue; const y = yTop + 30 * i + dt0 * dt0 * 1600 + dt0 * 120; if (y > yHit) continue; c.beginPath(); c.arc(xs + (i - 1) * .6, y, 2.2 - i * .4, 0, Math.PI * 2); c.fillStyle = css(tc, .95); c.fill(); }
 }
+/* result reveal timers: every delayed beat is registered here so resetGlass()/next() can cancel a reveal that is mid-flight
+   (tab switch, early tap, replay from the atlas) instead of letting stale timers land on the next color */
+const REV_T = []; let REV_ID = 0;
+function revT(f, ms) { const id = setTimeout(() => { const k = REV_T.indexOf(id); if (k >= 0) REV_T.splice(k, 1); f(); }, ms); REV_T.push(id); return id; }
+function clearRevT() { REV_ID++; REV_T.forEach(clearTimeout); REV_T.length = 0; }
 function reveal() {
+  if (state === 'result') return; // can't double-fire (auto-stir end + any stray caller)
+  clearRevT(); const rid = REV_ID;
   state = 'result';
   const yours = displayColor(meanA);
   const dE = dE00(toLab(target.rgb), toLab(yours));
@@ -311,14 +318,16 @@ function reveal() {
   $('res').hidden = false; $('res').classList.remove('ready'); resReady = false;
   const pe = $('rPct'), tk = v => { pe.textContent = v; dripSnd(0.6 + v / 100 * 1.4, 0.07); buzz(4); };
   const land = () => {
-    $('rVerd').classList.add('on'); $('rStars').classList.add('on'); if ($('rStars')._new) { $('rStars').querySelectorAll('i.nw').forEach((el, n) => setTimeout(() => { starBurst(el); if (n === 0) { clink(); haptic([8, 30, 8]); } else buzz(5); }, 330 + n * 180)); } if (newSets.length) setTimeout(() => { const [t, k] = newSets[newSets.length - 1]; toast(k >= 3 ? `collection complete · ${t}` : `${t} · ${k}/3`); }, 1400); haptic(15); pe.parentNode.style.setProperty('--f', '102%'); if (SPLIT) { if (pct >= 95) { SPLIT.fuse = SPLIT.t; haptic([12, 40, 30]); } else SPLIT.gap = SPLIT.t; } pe.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }, { transform: 'scale(1)' }], { duration: 380, easing: 'cubic-bezier(.3,1.6,.5,1)' });
+    if (rid !== REV_ID || state !== 'result') return;
+    $('rVerd').classList.add('on'); $('rStars').classList.add('on'); if ($('rStars')._new) { $('rStars').querySelectorAll('i.nw').forEach((el, n) => revT(() => { starBurst(el); if (n === 0) { clink(); haptic([8, 30, 8]); } else buzz(5); }, 330 + n * 180)); } if (newSets.length) revT(() => { const [t, k] = newSets[newSets.length - 1]; toast(k >= 3 ? `collection complete · ${t}` : `${t} · ${k}/3`); }, 1400); haptic(15); pe.parentNode.style.setProperty('--f', '102%'); if (SPLIT) { if (pct >= 95) { SPLIT.fuse = SPLIT.t; haptic([12, 40, 30]); } else SPLIT.gap = SPLIT.t; } pe.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }, { transform: 'scale(1)' }], { duration: 380, easing: 'cubic-bezier(.3,1.6,.5,1)' });
     payoff(pct, yours); DRIP.onResult(pct, yours);
-    if (msg && !daily) setTimeout(() => { chord(); buzz([20, 30, 20]); for (let i = 0; i < 50; i++) { const a = Math.random() * Math.PI * 2, v = 250 + Math.random() * 380; burst.push({ x: G.cx, y: G.y0, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 150, r: 1.5 + Math.random() * 3.5, t: 0, col: DYES[(Math.random() * DYES.length) | 0].rgb.map(v => v * 255) }); } DRIP.say('milestone'); }, 700); setTimeout(() => { resReady = true; $('res').classList.add('ready'); }, pct === 100 ? 2600 : 2000);
-    setTimeout(() => { holdCoins = false; eyeTick(eye0, save.eye); }, 700);
-    if (moments.length) setTimeout(() => badgeMoment(moments), 1600);
-    if (flyNew) { const nm = target.name, fx = { n: nm, h: rgbToHex(target.rgb), p: pct, d: Date.now() }; resReady = false; setTimeout(() => { if (!$('bMom').hidden || moments.length) { const w = setInterval(() => { if ($('bMom').hidden) { clearInterval(w); flyIn(nm, fx); } }, 200); } else flyIn(nm, fx); }, moments.length ? 2000 : 1500); }
+    if (msg && !daily) revT(() => { chord(); buzz([20, 30, 20]); for (let i = 0; i < 50; i++) { const a = Math.random() * Math.PI * 2, v = 250 + Math.random() * 380; burst.push({ x: G.cx, y: G.y0, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 150, r: 1.5 + Math.random() * 3.5, t: 0, col: DYES[(Math.random() * DYES.length) | 0].rgb.map(v => v * 255) }); } DRIP.say('milestone'); }, 700); revT(() => { resReady = true; $('res').classList.add('ready'); }, pct === 100 ? 2600 : 2000);
+    revT(() => { holdCoins = false; eyeTick(eye0, save.eye); }, 700);
+    if (moments.length) revT(() => badgeMoment(moments), 1600);
+    if (flyNew) { const nm = target.name, fx = { n: nm, h: rgbToHex(target.rgb), p: pct, d: Date.now() }; resReady = false; revT(() => { if (!$('bMom').hidden || moments.length) { const w = setInterval(() => { if ($('bMom').hidden) { clearInterval(w); flyIn(nm, fx); } }, 200); } else flyIn(nm, fx); }, moments.length ? 2000 : 1500); }
   };
-  setTimeout(() => {
+  revT(() => {
+    if (rid !== REV_ID) return;
     $('rev').style.opacity = '1'; $('rPct').parentNode.style.setProperty('--f', '0%');
     const dec = pct < 100, I = Math.floor(pct), nI = String(I).length, P0 = dec ? -1 : 0, cols = [];
     pe.innerHTML = ''; const mk = pl => { const c = document.createElement('span'); c.className = 'odc'; const r = document.createElement('span'); r.className = 'odr'; r.innerHTML = '0123456789'.split('').concat('0').map(d => `<b>${d}</b>`).join(''); c.appendChild(r); pe.appendChild(c); cols.push({ pl, c, r }); };
@@ -326,6 +335,7 @@ function reveal() {
     const setX = (x, exact) => { let prev = 0; for (let n = cols.length - 1; n >= 0; n--) { const o = cols[n], q = x / Math.pow(10, o.pl); let pos; if (exact) pos = Math.floor(Math.round(x * 10) / Math.pow(10, o.pl + 1) + 1e-6) % 10; else if (o.pl === P0) pos = q % 10; else pos = (Math.floor(q + 1e-6) % 10) + (prev >= 9 ? prev - 9 : 0); prev = pos; o.r.style.transform = `translateY(${(-pos).toFixed(3)}em)`; if (o.pl > 0) o.c.style.opacity = x >= Math.pow(10, o.pl) - .5 || exact ? '1' : '.18'; } };
     setX(0); const t0 = performance.now(), FD = 1250 + pct * 4; let lastU = -1, lastS = 0;
     const fast = now => {
+      if (rid !== REV_ID) return; // reveal was cancelled mid count-up
       const k = clamp((now - t0) / FD, 0, 1), x = pct * (1 - Math.pow(1 - k, 3.2));
       setX(x, k >= 1); pe.parentNode.style.setProperty('--f', x.toFixed(1) + '%');
       const u = Math.floor(x * (k > .8 ? 10 : 1)); if (u !== lastU && now - lastS > 45) { lastU = u; lastS = now; dripSnd(0.6 + x / 100 * 1.4, 0.05); buzz(3); }
@@ -366,7 +376,7 @@ function next() {
   if (CMP_PEND && !cmpBusy) { const cc = CMP_PEND; CMP_PEND = null; resReady = false; countryMoment(cc, () => { resReady = true; next(); }); return; }
   if (MODE === 'replay') { resetGlass(); MODE = 'level'; REPLAY = null; started = false; goTab('atlas'); return; }
   if (MODE === 'daily') { resetGlass(); MODE = 'level'; started = false; showHome(); setNav('home'); return; }
-  if (nexting) return; nexting = true; resReady = false; $('shareIc').hidden = true;
+  if (nexting) return; nexting = true; resReady = false; clearRevT(); $('shareIc').hidden = true;
   const rs = $('res'); rs.style.transition = 'opacity .4s ease, transform .5s cubic-bezier(.4,0,.6,1)'; rs.style.opacity = '0'; rs.style.transform = 'translateY(24px)'; $('rev').style.opacity = '0'; if (SPLIT) SPLIT.out = 0;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   setTimeout(() => {
@@ -378,7 +388,7 @@ function next() {
 let nexting = false;
 $('shareIc').addEventListener('click', e => { e.stopPropagation(); showShare(); });
 document.addEventListener('pointerdown', e => { const b = e.target.closest && e.target.closest('button'); if (b && !b.closest('#strip')) buzz(6); }, true);
-$('app').addEventListener('pointerdown', e => { if (state === 'result' && resReady && !e.target.closest('button,.ov,.home,.intro,.bmom,.story')) next(); });
+$('app').addEventListener('pointerdown', e => { if (state === 'result' && resReady && !nexting && !e.target.closest('button,.ov,.home,.intro,.bmom,.story')) next(); });
 
 /* ================= Glass & effects drawing ================= */
 function drawFG(dt) {
@@ -734,7 +744,7 @@ const dialUp = e => { const d = DIAL.drag; if (!d || d.id !== e.pointerId) retur
   if (performance.now() - d.t > 90) DIAL.v = 0;
   if (d.moved < 7) { DIAL.v = 0; const el = d.tgtEl, i = el ? beads.indexOf(el) : -1;
     if (i >= 0) { el.animate([{ filter: 'brightness(1.25)' }, { filter: 'none' }], { duration: 260 });
-      if (i === sel && Math.abs(wrapK(i - DIAL.p)) < .3) { DIAL.tgt = Math.round(DIAL.p); }
+      if (i === sel && Math.abs(wrapK(i - DIAL.p)) < .3) { DIAL.tgt = Math.round(DIAL.p); haptic(4); } // same light tick as a detent, so a tap never feels dead
       else DIAL.tgt = DIAL.p + wrapK(i - DIAL.p); }
     else DIAL.tgt = Math.round(DIAL.p); }
   DIAL.v = Math.max(-30, Math.min(30, DIAL.v)); dialKick(); };

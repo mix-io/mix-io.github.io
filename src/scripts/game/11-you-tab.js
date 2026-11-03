@@ -44,12 +44,13 @@ function frame(now) {
 
   // stirring by hand
   if (gp && gp.stir && state === 'play') {
-    gp.h = (gp.h || []).concat([[gp.x, gp.y]]).slice(-3); const sx = gp.h.reduce((a, q) => a + q[0], 0) / gp.h.length, sy = gp.h.reduce((a, q) => a + q[1], 0) / gp.h.length; if (gp.sx == null) { gp.sx = sx; gp.sy = sy; }
+    // stir smoothing: exponential, time-based (~35ms) so the feel is the same at 60/120Hz and on dropped frames
+    if (gp.fx == null) { gp.fx = gp.x; gp.fy = gp.y; } { const ks = 1 - Math.exp(-dt / .035); gp.fx += (gp.x - gp.fx) * ks; gp.fy += (gp.y - gp.fy) * ks; } const sx = gp.fx, sy = gp.fy; if (gp.sx == null) { gp.sx = sx; gp.sy = sy; }
     if (inWater(gp.x, gp.y)) {
       rod = { px: gp.x, py: gp.y };
       if (fluidOK && (gp.sx !== sx || gp.sy !== sy)) stirAt(gp.sx, gp.sy, sx, sy, dt);
     } else rod = null;
-    if (inWater(gp.x, gp.y)) { if (vortS < .05) vortX = gp.x; vortX += (gp.x - vortX) * .15; const cr = (gp.x - vortX) * (gp.y - gp.ly) - (gp.y - G.y0) * (gp.x - gp.lx); if (Math.abs(cr) > 1) stirDir = cr > 0 ? 1 : -1; }
+    if (inWater(gp.x, gp.y)) { if (vortS < .05) vortX = gp.x; vortX += (gp.x - vortX) * (1 - Math.exp(-dt / .1)); const cr = (gp.x - vortX) * (gp.y - gp.ly) - (gp.y - G.y0) * (gp.x - gp.lx); if (Math.abs(cr) > 1) stirDir = cr > 0 ? 1 : -1; }
     if (inWater(gp.x, gp.y)) { const spd = Math.hypot(gp.x - gp.lx, gp.y - gp.ly) / Math.max(dt, .008); if (spd > 380 && mbub.length < 90 && Math.random() < Math.min(.9, (spd - 380) / 900)) { const n = 1 + (spd > 1100 ? 2 : spd > 700 ? 1 : 0); for (let q = 0; q < n; q++) mbub.push({ x: gp.x + (Math.random() - .5) * 16, y: Math.max(G.y0 + 6, gp.y + (Math.random() - .5) * 14), r: .5 + Math.random() * 1.5, vy: 14 + Math.random() * 18, ph: Math.random() * 6.3, t: 0 }); } WET = Math.min(1, WET + Math.min(spd, 1500) / 1500 * dt * .5); }
     if (inWater(gp.x, gp.y) && (gp.lx !== gp.x || gp.ly !== gp.y)) trail.push({ x: gp.x, y: gp.y, t: 0, sp: Math.hypot(gp.x - gp.lx, gp.y - gp.ly) / Math.max(dt, .008) });
     { const cyw = (G.y0 + G.y1) / 2, a1 = Math.atan2((sy - cyw) / (G.wh * .5), (sx - G.cx) / (G.ww * .5)), a0 = Math.atan2((gp.sy - cyw) / (G.wh * .5), (gp.sx - G.cx) / (G.ww * .5)); let da = a1 - a0; da = Math.atan2(Math.sin(da), Math.cos(da)); const rr = Math.hypot((sx - G.cx) / (G.ww * .5), (sy - cyw) / (G.wh * .5));
