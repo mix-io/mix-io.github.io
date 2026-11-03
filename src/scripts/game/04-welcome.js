@@ -304,7 +304,7 @@ const HOMEBG = (() => {
   }
   function loop(now) {
     if (!on) return; requestAnimationFrame(loop);
-    const vis = ((!$('home').hidden && $('settings').hidden && $('atlas').hidden) || !$('intro').hidden) && !window.__kOn; if (!vis || document.hidden || !fl) { last = 0; return; }
+    const vis = ((!$('home').hidden && $('settings').hidden && $('atlas').hidden) || !$('atlas').hidden || !$('intro').hidden) && !window.__kOn; if (!vis || document.hidden || !fl) { last = 0; return; }
     const lite = !fg.on && !revT0 && !bench; if (lite && last && now - last < 31) return;
     const ft = last ? now - last : 16; last = now; const dt = Math.min(.1, ft / 1000);
     if (bench) { bench.n++; if (bench.n > 2) bench.sum += ft; if (bench.n >= 22) { const avg = bench.sum / 20; bench = null; picked = true; if (avg > 21 && lvl < LV.length - 1) { lvl += avg > 32 ? 2 : 1; lvl = Math.min(lvl, LV.length - 1); try { build(); } catch (e) { on = false; return; } } revT0 = now; } }
@@ -327,6 +327,7 @@ const HOMEBG = (() => {
     touchPx(cx, cy) { if (!fl) return; fg.tx = clamp(cx / innerWidth, 0, 1); fg.ty = 1 - clamp(cy / innerHeight, 0, 1); if (!fg.on) { fg.on = true; fg.fresh = true; } },
     touch(x, y) { if (!fl) return; fg.tx = x; fg.ty = y; if (!fg.on) { fg.on = true; fg.fresh = true; } },
     release() { fg.on = false; },
+    host(el) { if (cv && el && cv.parentNode !== el) el.insertBefore(cv, el.firstChild); },
   };
 })();
 

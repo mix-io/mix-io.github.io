@@ -1181,6 +1181,7 @@ body.bgp .hbg{filter:brightness(.6) saturate(.9)}
 body,body *{-webkit-touch-callout:none}img,svg,canvas{-webkit-user-drag:none}input,textarea,[contenteditable]{-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important;font-size:max(16px,1em)}
 .whl .wsc{perspective:none!important}.whl .wi{transform-origin:50% 50%!important;display:flex;align-items:center;justify-content:center;height:36px;line-height:1!important;font-variant-numeric:tabular-nums;padding-top:1px;box-sizing:border-box}.idbd{grid-template-columns:1fr 1fr!important;gap:10px!important}.wgo{width:100%!important;max-width:340px!important;margin-left:auto;margin-right:auto}.wk{text-indent:.24em}body{font-variant-numeric:tabular-nums}
 #hEye{width:100%!important;align-items:center}#hEye .hring{margin-left:auto!important;margin-right:auto!important;flex:none}
+#aView>.hbg{z-index:0;opacity:.6;filter:brightness(.55) saturate(1.15);pointer-events:none}#aView>canvas:not(.hbg){z-index:1}#aView>#aPins{z-index:2}
 </style>
 
 <div id="bootc" style="position:fixed;inset:0;background:#000;z-index:9999;transition:opacity .5s"></div>
@@ -1734,7 +1735,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6ae975be'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6ae976c4'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
@@ -1981,7 +1982,7 @@ const HOMEBG = (() => {
   }
   function loop(now) {
     if (!on) return; requestAnimationFrame(loop);
-    const vis = ((!$('home').hidden && $('settings').hidden && $('atlas').hidden) || !$('intro').hidden) && !window.__kOn; if (!vis || document.hidden || !fl) { last = 0; return; }
+    const vis = ((!$('home').hidden && $('settings').hidden && $('atlas').hidden) || !$('atlas').hidden || !$('intro').hidden) && !window.__kOn; if (!vis || document.hidden || !fl) { last = 0; return; }
     const lite = !fg.on && !revT0 && !bench; if (lite && last && now - last < 31) return;
     const ft = last ? now - last : 16; last = now; const dt = Math.min(.1, ft / 1000);
     if (bench) { bench.n++; if (bench.n > 2) bench.sum += ft; if (bench.n >= 22) { const avg = bench.sum / 20; bench = null; picked = true; if (avg > 21 && lvl < LV.length - 1) { lvl += avg > 32 ? 2 : 1; lvl = Math.min(lvl, LV.length - 1); try { build(); } catch (e) { on = false; return; } } revT0 = now; } }
@@ -2004,6 +2005,7 @@ const HOMEBG = (() => {
     touchPx(cx, cy) { if (!fl) return; fg.tx = clamp(cx / innerWidth, 0, 1); fg.ty = 1 - clamp(cy / innerHeight, 0, 1); if (!fg.on) { fg.on = true; fg.fresh = true; } },
     touch(x, y) { if (!fl) return; fg.tx = x; fg.ty = y; if (!fg.on) { fg.on = true; fg.fresh = true; } },
     release() { fg.on = false; },
+    host(el) { if (cv && el && cv.parentNode !== el) el.insertBefore(cv, el.firstChild); },
   };
 })();
 
@@ -4007,7 +4009,7 @@ const ATLAS = (() => {
   const GI = (() => { const m = new Map(); ATLAS_DATA.forEach((r, i) => { const key = r[1].toFixed(2) + ',' + r[2].toFixed(2); (m.get(key) || m.set(key, []).get(key)).push(i); }); const o = []; m.forEach((L, key) => L.forEach((i, k) => o[i] = { key, k, n: L.length })); return o; })(); let SPR = 0;
   function loadThree(cb) { if (window.THREE) return cb(); if (loading) return; loading = true; const s = document.createElement('script'); s.crossOrigin = 'anonymous'; s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'; s.onload = () => { loading = false; cb(); }; s.onerror = () => { loading = false; $('aCount').textContent = 'the globe needs a connection'; }; document.head.appendChild(s); }
   function init() {
-    T = THREE; renderer = new T.WebGLRenderer({ antialias: (devicePixelRatio || 1) < 2, powerPreference: 'low-power' }); renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6)); renderer.setClearColor(0x000000, 1); renderer.outputEncoding = T.sRGBEncoding;
+    T = THREE; renderer = new T.WebGLRenderer({ antialias: (devicePixelRatio || 1) < 2, powerPreference: 'low-power', alpha: true, premultipliedAlpha: true }); renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6)); renderer.setClearColor(0x000000, 0); renderer.outputEncoding = T.sRGBEncoding;
     view.insertBefore(renderer.domElement, pc); sc3 = new T.Scene(); cam = new T.PerspectiveCamera(FOV, 1, .01, 200);
     grp = new T.Group(); sc3.add(grp);
     renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.2; EMAT = null; SUN = null;
@@ -4181,8 +4183,8 @@ const ATLAS = (() => {
   view.addEventListener('wheel', e => { e.preventDefault(); lastTouch = performance.now(); zT = clamp(zT * Math.exp(e.deltaY * .0012), 1.35, zMax); }, { passive: false });
   return {
     zoomOut(cb) { fly = null; vel = [0, 0]; zSlow = true; zT = zMax; glowName = null; setTimeout(() => { zSlow = false; cb && cb(); }, 1700); },
-    pins() { return sp; }, open() { W = 0; if (!cin) { fitted = false; fly = null; vel = [0, 0]; rotX = .4; if (JOUR) { jStart = performance.now() + 600; jFollow = -1; } } const fm = found(); $('aCount').textContent = `${ALLN.filter(n => fm[n]).length} / ${ALLN.length} found`; card.hidden = true; if (running) return; running = true; last = 0; loadThree(() => { if (!ready) init(); W = 0; resize(); requestAnimationFrame(frame); }); },
-    close() { running = false; card.hidden = true; },
+    pins() { return sp; }, open() { try { HOMEBG.ensure(); HOMEBG.host(view); if (!view._bgT) { view._bgT = 1; const mv = e => { try { HOMEBG.touchPx(e.clientX, e.clientY); } catch (x) {} }, up = () => { try { HOMEBG.release(); } catch (x) {} }; view.addEventListener('pointerdown', mv, { passive: true }); view.addEventListener('pointermove', e => { if (e.buttons || e.pointerType === 'touch') mv(e); }, { passive: true }); view.addEventListener('pointerup', up, { passive: true }); view.addEventListener('pointercancel', up, { passive: true }); } } catch (e) {} W = 0; if (!cin) { fitted = false; fly = null; vel = [0, 0]; rotX = .4; if (JOUR) { jStart = performance.now() + 600; jFollow = -1; } } const fm = found(); $('aCount').textContent = `${ALLN.filter(n => fm[n]).length} / ${ALLN.length} found`; card.hidden = true; if (running) return; running = true; last = 0; loadThree(() => { if (!ready) init(); W = 0; resize(); requestAnimationFrame(frame); }); },
+    close() { running = false; card.hidden = true; try { HOMEBG.release(); HOMEBG.host($('home')); } catch (e) {} },
     country(cc) { try { GOLD = doneSet(); gSig = ''; } catch (e) {} const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; GA[cc] = { v: 0, t0: performance.now() + (reduce ? 300 : 1100) }; let s = [0, 0, 0]; ATLAS_DATA.forEach((r, i) => { if (r[6] === cc) { s[0] += PV[i][0]; s[1] += PV[i][1]; s[2] += PV[i][2]; } }); const l = Math.hypot(...s); if (!l) return; const [x0, y0, z0] = s.map(v => v / l), ry = Math.atan2(-x0, z0), rx = Math.atan2(y0, Math.hypot(x0, z0)); glowName = null; if (reduce) { rotX = rx; rotY = ry; fly = null; } else { fly = { rx, ry, k: 2.2 }; zT = Math.max(1.6, zMax * .72); } },
     cinematic(n, cb) { const i = ATLAS_DATA.findIndex(r => r[0] === n); if (i < 0) { cb(); return; } { const t0 = performance.now(), chk = () => { if (!cin || cin.cb !== cb) return; if (cin.done) return; if ((!ready && performance.now() - t0 > 2500) || performance.now() - t0 > 7000) { cin = null; cb(); } else setTimeout(chk, 500); }; setTimeout(chk, 500); } const [x0, y0, z0] = PV[i], ry = Math.atan2(-x0, z0), rx = Math.atan2(y0, Math.hypot(x0, z0)); let dy = ry - rotY; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); if (Math.abs(dy) < 1.2) dy += dy >= 0 ? Math.PI * 2 * 0 + 1.6 : -1.6; cin = { ry0: rotY - (Math.abs(ry - rotY) < 1.2 ? 1.6 * Math.sign(dy || 1) : 0), rx0: rotX, rx, dy: 0, cb, t0: null }; { let d2 = ry - cin.ry0; d2 = Math.atan2(Math.sin(d2), Math.cos(d2)); cin.dy = d2; } fly = null; zoom = zT = zMax; glowName = n; glowT = performance.now() + 2500; },
     flyTo(n, fast) { const i = ATLAS_DATA.findIndex(r => r[0] === n); if (i < 0) return; const [x0, y0, z0] = PV[i], ry = Math.atan2(-x0, z0), z1 = Math.hypot(x0, z0), rx = Math.atan2(y0, z1); fly = { rx, ry, k: fast ? 10 : 4 }; if (!fast) zT = Math.max(1.35, zMax * .58); glowName = n; glowT = performance.now(); },

@@ -1120,4 +1120,5 @@ body.bgp .hbg{filter:brightness(.6) saturate(.9)}
 body,body *{-webkit-touch-callout:none}img,svg,canvas{-webkit-user-drag:none}input,textarea,[contenteditable]{-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important;font-size:max(16px,1em)}
 .whl .wsc{perspective:none!important}.whl .wi{transform-origin:50% 50%!important;display:flex;align-items:center;justify-content:center;height:36px;line-height:1!important;font-variant-numeric:tabular-nums;padding-top:1px;box-sizing:border-box}.idbd{grid-template-columns:1fr 1fr!important;gap:10px!important}.wgo{width:100%!important;max-width:340px!important;margin-left:auto;margin-right:auto}.wk{text-indent:.24em}body{font-variant-numeric:tabular-nums}
 #hEye{width:100%!important;align-items:center}#hEye .hring{margin-left:auto!important;margin-right:auto!important;flex:none}
+#aView>.hbg{z-index:0;opacity:.6;filter:brightness(.55) saturate(1.15);pointer-events:none}#aView>canvas:not(.hbg){z-index:1}#aView>#aPins{z-index:2}
 </style>
