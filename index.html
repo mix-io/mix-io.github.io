@@ -1081,7 +1081,43 @@ body.bgp .hbg{filter:brightness(.6) saturate(.9)}
 .jmore{grid-column:1/-1;margin-top:4px;height:40px;border:0;border-radius:14px;color:#fff;font:700 13px var(--f-ui);background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.12)}
 .jst{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .jstamp{display:flex;align-items:center;gap:6px;padding:5px 9px 5px 5px;border-radius:999px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.12)}
-.jstamp img{width:20px;height:14px;border-radius:3px;object-fit:cover}.jstamp.gold{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,226,160,.16),rgba(255,190,90,.05));box-shadow:inset 0 0 0 1.2px rgba(236,196,110,.9),0 0 14px -4px rgba(255,200,110,.45)}.jstamp.gold em{color:#ffe2a8}.jstamp.sheen::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,242,205,.55) 50%,transparent 70%);transform:translateX(-120%);animation:jsheen 1.3s .35s ease-out 1 forwards;pointer-events:none}@keyframes jsheen{to{transform:translateX(120%)}}.jstamp small{font:600 9.5px var(--f-ui);color:rgba(255,255,255,.38);margin-left:-1px}
+.jstamp img{width:20px;height:14px;border-radius:3px;object-fit:cover}
+.yhero{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 10px}
+.yhero .hs{position:relative;overflow:hidden;padding:14px 14px 12px;border-radius:20px;text-align:left;color:#fff;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.025) 55%,rgba(255,255,255,.04));box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 .5px rgba(255,255,255,.1),0 10px 24px -14px rgba(0,0,0,.7)}
+.yhero .hs::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 0% 0%,color-mix(in srgb,var(--hc,#9fd4ff) 22%,transparent),transparent 60%);pointer-events:none}
+.yhero small{position:relative;display:block;font:700 10px var(--f-ui);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.yhero b{position:relative;display:block;margin-top:6px;font:800 34px/1 var(--f-display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.yhero b i{font-style:normal;font-size:15px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:0;margin-left:3px}
+.yhero em{position:relative;display:block;margin-top:5px;font:600 11.5px var(--f-ui);font-style:normal;color:rgba(255,255,255,.55)}
+.yhero em.g{color:#ffe2a8}
+.ymeter{display:block;width:100%;margin:0 0 10px;padding:14px 14px 12px;border-radius:20px;text-align:left;color:#fff;background:radial-gradient(120% 140% at 0% 50%,color-mix(in srgb,var(--gc) 16%,transparent),transparent 60%),linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.025) 52%,rgba(255,255,255,.04));box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 .5px rgba(255,255,255,.1)}
+.ymeter .mh{display:flex;align-items:center;gap:10px}
+.ymeter .mh .rkg{flex:none;display:flex}
+.ymeter .mh div{flex:1;min-width:0}.ymeter .mh small{display:block;font:700 10px var(--f-ui);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.ymeter .mh b{font:800 20px var(--f-display);letter-spacing:-.02em}
+.ymeter .mh span.nx{font:600 12px var(--f-ui);color:rgba(255,255,255,.6);text-align:right}
+.ymeter .trk{position:relative;height:30px;margin:14px 6px 2px}
+.ymeter .bar{position:absolute;left:0;right:0;top:12px;height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}
+.ymeter .bar u{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:linear-gradient(90deg,#7A6FA8,#CFDAEA,#F2B934,#E8234F,#2F6BFF,#9B4DFF,#12C08A,#bfefff);background-size:var(--bw) 100%;box-shadow:0 0 12px rgba(255,255,255,.25);transition:width 1s cubic-bezier(.22,1,.36,1)}
+.ymeter .tk{position:absolute;top:9px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#0c0f14;box-shadow:inset 0 0 0 1.5px var(--tc),0 0 6px -1px var(--tc)}
+.ymeter .tk.on{background:var(--tc)}
+.ymeter .me{position:absolute;top:2px;width:26px;height:26px;margin-left:-13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--gc) 45%,color-mix(in srgb,var(--gc) 50%,#000));box-shadow:0 0 0 2px rgba(0,0,0,.6),0 0 16px var(--gc);transition:left 1s cubic-bezier(.22,1,.36,1)}
+.ymeter .lbls{display:flex;justify-content:space-between;margin:2px 0 0;font:600 10px var(--f-ui);color:rgba(255,255,255,.4)}
+.yboard{margin:14px 0 0;padding:16px 12px 10px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 .5px rgba(255,255,255,.08)}
+.ybh{display:flex;justify-content:space-between;align-items:baseline;margin:0 4px 8px}
+.ybh b{font:800 20px var(--f-display);letter-spacing:-.02em}
+.ybh small{font:700 12px var(--f-ui);color:#9fd4ff}
+.yboard .lbr{padding:9px 10px;border-radius:14px}
+.yboard .lbr:nth-child(1) .lbn{color:#ffd58a}.yboard .lbr:nth-child(2) .lbn{color:#dfe6ee}.yboard .lbr:nth-child(3) .lbn{color:#e8a87c}
+.yboard .lbr.me{background:linear-gradient(90deg,rgba(var(--dna-rgb),.22),rgba(var(--dna-rgb),.06));box-shadow:inset 0 0 0 .5px rgba(var(--dna-rgb),.5)}
+.yboard .lbgap{text-align:center;color:rgba(255,255,255,.3);font:700 12px var(--f-ui);letter-spacing:.3em;padding:2px 0}
+.ybtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:8px;padding:12px;border-radius:14px;font:700 13px var(--f-ui);color:#fff;background:rgba(255,255,255,.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 .5px rgba(255,255,255,.1)}
+.yppb{justify-content:flex-start;padding:14px 16px}.yppb span{font-weight:800}.yppb small{color:rgba(255,255,255,.5);font-weight:600}.yppb i{margin-left:auto;font-style:normal;color:#9fd4ff}
+.jr .jpg[data-p="pc"]{display:block!important}
+.yhero .hs,.ymeter,.ybtn{border:0!important;outline:0;font-family:inherit;-webkit-appearance:none;appearance:none;cursor:pointer;transition:transform .18s cubic-bezier(.3,1.4,.5,1)}
+.yhero .hs:active,.ymeter:active,.ybtn:active{transform:scale(.97)}
+.yhero .hs:focus-visible,.ymeter:focus-visible,.ybtn:focus-visible{box-shadow:0 0 0 2px #9fd4ff}
+.jstamp.gold{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,226,160,.16),rgba(255,190,90,.05));box-shadow:inset 0 0 0 1.2px rgba(236,196,110,.9),0 0 14px -4px rgba(255,200,110,.45)}.jstamp.gold em{color:#ffe2a8}.jstamp.sheen::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,242,205,.55) 50%,transparent 70%);transform:translateX(-120%);animation:jsheen 1.3s .35s ease-out 1 forwards;pointer-events:none}@keyframes jsheen{to{transform:translateX(120%)}}.jstamp small{font:600 9.5px var(--f-ui);color:rgba(255,255,255,.38);margin-left:-1px}
 .cmom{position:absolute;inset:0;z-index:47;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:10px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 18vh);pointer-events:auto;background:radial-gradient(120% 60% at 50% 100%,rgba(0,0,0,.55),transparent 60%)}.cmom .cmin{display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}.cmom img{width:30px;height:21px;border-radius:4px;object-fit:cover;box-shadow:0 0 0 .5px rgba(255,255,255,.3)}.cmom b{font:600 22px var(--f-display);letter-spacing:-.02em;color:#ffe2a8;text-shadow:0 0 18px rgba(255,200,110,.45)}.cmom small{font:500 11px var(--f-ui);color:rgba(255,255,255,.45);opacity:0;transition:opacity .8s .4s}.cmom.on .cmin{opacity:1;transform:none}.cmom.on small{opacity:1}
 .jstamp em{font:600 11.5px var(--f-ui);font-style:normal;color:rgba(255,255,255,.8)}
 .jempty{grid-column:1/-1;padding:16px;text-align:center;color:var(--muted);font-size:13px}
@@ -1208,18 +1244,21 @@ body.bgp .hbg{filter:brightness(.6) saturate(.9)}
       <div class="row ov-body"><div class="in">
         <div class="ering" id="eRing"><canvas id="eRingC"></canvas><div class="eamb" id="eAmb"><i class="ear"></i><i class="eab a1"></i><i class="eab a2"></i><i class="eab a3"></i><i class="ehalo"></i><div class="emotes"><b style="--x:18%;--y:30%;--d:9s;--s:3px;animation-delay:-1s"></b><b style="--x:78%;--y:22%;--d:11s;--s:2px;animation-delay:-4s"></b><b style="--x:64%;--y:80%;--d:10s;--s:2.5px;animation-delay:-2s"></b><b style="--x:26%;--y:72%;--d:12s;--s:2px;animation-delay:-6s"></b><b style="--x:50%;--y:12%;--d:8s;--s:1.6px;animation-delay:-3s"></b><b style="--x:88%;--y:58%;--d:13s;--s:2px;animation-delay:-7s"></b><b style="--x:10%;--y:52%;--d:9.5s;--s:1.8px;animation-delay:-5s"></b><b style="--x:40%;--y:88%;--d:11s;--s:2.2px;animation-delay:-8s"></b><b style="--x:72%;--y:40%;--d:14s;--s:1.4px;animation-delay:-2.5s"></b><b style="--x:34%;--y:20%;--d:10s;--s:1.5px;animation-delay:-9s"></b></div></div><div class="eblob" id="eBlob"></div><div class="ectr"><div class="eyenum" id="eNum">1000</div><div class="eyerank" id="eRank" hidden></div><div class="eyebest" id="eBest"></div></div><div class="etip" id="eTip" hidden><i></i><span></span></div></div><div class="eleg" id="eLeg"></div><div class="eage" id="eAge"></div>
         <div class="dna" id="dna"></div>
-        <div class="duo solo"><button class="rkrow" id="rkRow"></button></div>
+        <div class="yhero" id="yHero"></div>
+        <button class="ymeter" id="yMeter" aria-label="your rank"></button>
+        <div class="duo solo" hidden><button class="rkrow" id="rkRow"></button></div>
         <dl class="stats s3">
           <div class="stat2"><dt>perfects</dt><dd id="sPerf">0</dd></div>
           <div class="stat2"><dt>average</dt><dd id="sAvg">–</dd></div>
           <div class="stat2"><dt>days played</dt><dd id="sStreak">0</dd></div>
         </dl>
-        <div class="jr" id="jr"><div class="jrh"><b>travel journal</b><small>everywhere your colors have taken you</small></div><div class="sec" id="palCount"></div>
-        <div class="jtabs" id="jTabs" role="tablist"><button data-p="pc" class="on">postcards</button><button data-p="st">stamps</button><button data-p="bd">badges</button><button data-p="cl">sets</button><i class="jtk"></i></div>
+        <div class="yboard" id="yBoard"><div class="ybh"><b>world leaderboard</b><small id="yMe"></small></div><div id="yL"><div class="lbmsg">loading the world…</div></div><button class="ybtn" id="yAll">full leaderboard ›</button></div>
+        <div class="jr" id="jr"><div class="jrh"><b>postcards</b><small>every color you've matched, stamped and sent home</small></div><div class="sec" id="palCount"></div>
+        <div class="jtabs" id="jTabs" role="tablist" hidden><button data-p="pc" class="on">postcards</button><button data-p="st">stamps</button><button data-p="bd">badges</button><button data-p="cl">sets</button><i class="jtk"></i></div>
         <div class="jpg" data-p="pc"><div class="jpc" id="jPc"></div></div>
         <div class="jpg" data-p="st" hidden><button class="rkrow pprow" id="ppRow"></button><div class="jst" id="jSt"></div></div>
         <div class="jpg" data-p="bd" hidden><div class="brow" id="bRow"></div><div class="binfo" id="bInfo"></div></div>
-        <div class="jpg" data-p="cl" hidden><div class="gal" id="pal"></div></div></div>
+        <div class="jpg" data-p="cl" hidden><div class="gal" id="pal"></div></div><button class="ybtn yppb" id="yPP"><span>passport</span><small>stamps · badges · sets</small><i>›</i></button></div>
       </div></div>
     </div>
   </div>
@@ -1580,7 +1619,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6ae95585'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6ae9565b'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
@@ -3567,6 +3606,24 @@ function renderJournal() { const W = $('jPc'); if (!W) return; const L = (save.p
     if (ns.length) try { localStorage.setItem('mixio.goldSeen', JSON.stringify(seen.concat(ns))); } catch (e) {} } catch (e) { st.innerHTML = ''; } } }
 { const T = $('jTabs'); if (T) T.addEventListener('click', e => { const b = e.target.closest('[data-p]'); if (!b) return; buzz(4); T.querySelectorAll('[data-p]').forEach(x => x.classList.toggle('on', x === b)); const i = [...T.querySelectorAll('[data-p]')].indexOf(b); T.style.setProperty('--ji', i); document.querySelectorAll('.jpg').forEach(pg => { const on = pg.dataset.p === b.dataset.p; pg.hidden = !on; if (on) tabIn(pg); }); }); }
 { const W = $('jPc'); if (W) W.addEventListener('click', e => { const c = e.target.closest('.jcard'); if (c) { buzz(5); try { STORY.openName(c.dataset.n, c); } catch (x) {} return; } if (e.target.closest('[data-all]')) { try { openPassport(); } catch (x) {} } }); }
+
+let YLB = null, YLBt = 0;
+function renderYou() {
+  const ey = (save.eye ?? CH0), r = rankOf(ey), nx = nextRank(ey), st = save.stats || {}; let P = { stamped: 0, gold: 0 }; try { P = passportSummary(); } catch (e) {}
+  const me = YLB && YLB.me, H = $('yHero'); if (H) H.innerHTML = `<button class="hs" data-y="lb" style="--hc:#9fd4ff"><small>world rank</small><b>${me ? '#' + me.toLocaleString('en-US') : '—'}</b><em>${me ? 'on the leaderboard' : ACCOUNT.signedIn() ? 'loading…' : 'sign in to join'}</em></button><button class="hs" data-y="lv" style="--hc:rgb(var(--dna-rgb))"><small>level</small><b>${save.level || 1}</b><em>${(st.perfects || 0)} perfects</em></button><button class="hs" data-y="pp" style="--hc:#ffd58a"><small>countries</small><b>${P.stamped}<i>/ ${P.nC || ''}</i></b><em class="${P.gold ? 'g' : ''}">${P.gold ? P.gold + ' complete ✦' : 'none complete yet'}</em></button><button class="hs" data-y="cc" style="--hc:#b45aff"><small>chroma</small><b>${(save.chroma || 0).toLocaleString('en-US')}</b><em>spend it on packs</em></button>`;
+  const M = $('yMeter'); if (M) { const pos = v => clamp(v, 0, 100); M.style.setProperty('--gc', r[2]);
+    M.innerHTML = `<div class="mh"><span class="rkg">${gemSVG(r, 30)}</span><div><small>rank</small><b>${r[1]}</b></div><span class="nx">${ey >= 100 ? 'world ranked' : nx ? `${(nx[0] - ey).toFixed(1)} to ${nx[1]}` : `${(100 - ey).toFixed(1)} to world ranked`}</span></div><div class="trk"><div class="bar" style="--bw:${(100 / Math.max(1, pos(ey)) * 100).toFixed(0)}%"><u style="width:0%"></u></div>${RANKS.map(q => `<i class="tk${ey >= q[0] ? ' on' : ''}" style="left:${pos(q[0])}%;--tc:${q[2]}"></i>`).join('')}<i class="me" style="left:0%"></i></div><div class="lbls"><span>0</span><span>${fmtC(ey)} eye</span><span>100</span></div>`;
+    requestAnimationFrame(() => requestAnimationFrame(() => { const u = M.querySelector('.bar u'), m = M.querySelector('.me'); if (u) u.style.width = pos(ey) + '%'; if (m) m.style.left = pos(ey) + '%'; })); }
+  const L = $('yL'); if (L) { const draw = () => { if (!YLB || !YLB.rows) return; const uid = SB.signedIn() ? (save.acct && save.acct.id) : null, rows = YLB.rows, top = rows.slice(0, 5), mi = rows.findIndex(x => x.id === uid);
+      const row = (x, n) => `<div class="lbr${x.id === uid ? ' me' : ''}"><span class="lbn">${n}</span><span class="lbd" style="background:${/^#[0-9a-f]{6}$/i.test(x.dna || '') ? x.dna : '#8a96a8'}"></span><span class="lbm"></span><span class="lbc">${Number(x.chroma).toFixed(1)}</span></div>`;
+      let html = top.map((x, k) => row(x, k + 1)).join(''), names = top.map(x => x.name); if (mi >= 5) { html += '<div class="lbgap">···</div>' + row(rows[mi], mi + 1); names.push(rows[mi].name); } else if (mi < 0 && YLB.me && uid) { html += `<div class="lbgap">···</div><div class="lbr me"><span class="lbn">${YLB.me}</span><span class="lbd" style="background:rgb(var(--dna-rgb))"></span><span class="lbm"></span><span class="lbc">${fmtC(ey)}</span></div>`; names.push(SB.uname() || 'you'); }
+      L.innerHTML = html || '<div class="lbmsg">no one yet. be the first.</div>'; L.querySelectorAll('.lbm').forEach((el, k) => el.textContent = ((names[k] || 'player') + '').toLowerCase()); $('yMe').textContent = YLB.me ? 'you · #' + YLB.me.toLocaleString('en-US') : ''; };
+    draw(); if (Date.now() - YLBt > 30000) { YLBt = Date.now(); (async () => { try { const [rows, mr] = await Promise.all([SB.top(50), SB.myRank().catch(() => 0)]); YLB = { rows: rows || [], me: mr || 0 }; draw(); const H2 = $('yHero'); if (H2 && YLB.me) { const b = H2.querySelector('[data-y=lb] b'), e = H2.querySelector('[data-y=lb] em'); if (b) b.textContent = '#' + YLB.me.toLocaleString('en-US'); if (e) e.textContent = 'on the leaderboard'; } } catch (e) { if (!YLB) L.innerHTML = '<div class="lbmsg">the leaderboard is offline right now. your progress is safe.</div>'; } })(); } }
+}
+{ const H = $('yHero'); if (H) H.addEventListener('click', e => { const b = e.target.closest('[data-y]'); if (!b) return; buzz(5); const k = b.dataset.y; if (k === 'lb') { if (ACCOUNT.signedIn()) openRanks(); else openAccountSheet(false, 'lb'); } else if (k === 'pp') { goTab('cards'); try { CARDS.seg && CARDS.seg('pp'); } catch (x) {} } else if (k === 'cc') goTab('cards'); else openRanks(); }); }
+$('yMeter') && $('yMeter').addEventListener('click', () => { buzz(5); openRanks(); });
+$('yAll') && $('yAll').addEventListener('click', () => { buzz(5); openRanks(); });
+$('yPP') && $('yPP').addEventListener('click', () => { buzz(5); goTab('cards'); try { CARDS.seg && CARDS.seg('pp'); } catch (x) {} });
 function renderSettings(quiet) {
   renderFav();
   const st = save.stats, ey = (save.eye ?? CH0), rk = rankOf(ey);
@@ -3578,7 +3635,7 @@ function renderSettings(quiet) {
   $('palCount').innerHTML = `${nGot.toLocaleString('en-US')} / ${ALLN.length.toLocaleString('en-US')} collected<div class="wbar"><i style="width:${(nGot / ALLN.length * 100).toFixed(1)}%"></i></div>`;
   renderPPRow(); renderColls(got);
   save.seenWall = ALLN.filter(n => got[n]);
-  renderBadges(); try { renderJournal(); } catch (e) {}
+  renderBadges(); try { renderJournal(); } catch (e) {} try { renderYou(); } catch (e) { console.warn('[mix.io] you', e); }
   $('tSound').classList.toggle('on', !save.muted); $('tHap').classList.toggle('on', !!save.haptics); $('tCB').classList.toggle('on', !!save.cb);
 }
 $('gearBtn').addEventListener('click', () => goTab('home'));
@@ -4441,6 +4498,7 @@ if(save.chroma==null&&(save.level||1)<=1)save.chroma=100;
 renderPacks();
 return{open(){host.hidden=false;window.__kOn=1;setTimeout(()=>BG.warm(),350);$('#balN').textContent=st.bal;setBal(0);try{renderCol();renderPP();}catch(e){}seg(segV||'packs');const pg=$('#page>.in')||$('#page .in');if(pg){pg.style.animation='none';void pg.offsetWidth;pg.style.animation='';}},
  close(){if($('#stage').classList.contains('on'))return;host.hidden=true;window.__kOn=0;},
+ seg(v){try{seg(v);}catch(e){}},
  shut(){host.hidden=true;window.__kOn=0;if($('#stage').classList.contains('on')){$('#stage').classList.remove('on');host.classList.remove('kstage');BG.stop();}},
  earned(n){if(n>0)setTimeout(()=>{try{toast(`+${n} chroma`);}catch(e){}},900);}};
 })();
