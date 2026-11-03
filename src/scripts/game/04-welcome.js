@@ -281,7 +281,7 @@ function runIntro(done) {
 const HOMEBG = (() => {
   const LV = [{ sim: 56, dye: 224, it: 7, sc: .48 }, { sim: 44, dye: 176, it: 6, sc: .4 }, { sim: 36, dye: 144, it: 5, sc: .32 }];
   const FL = { curl: 1.5, vdis: .35, ddis: .07 };
-  let BRIGHT = .35, fl = null, cv = null, cols = null, last = 0, t = 0, acc = 0, fade = 0, lvl = 0, on = false, gain = 1, gainT = 1, rev = 9, revT0 = 0, bench = null, picked = false;
+  let forceLite = false, BRIGHT = .35, fl = null, cv = null, cols = null, last = 0, t = 0, acc = 0, fade = 0, lvl = 0, on = false, gain = 1, gainT = 1, rev = 9, revT0 = 0, bench = null, picked = false;
   const fg = { tx: 0, ty: 0, x: 0, y: 0, px: 0, py: 0, on: false, fresh: true, dyeT: 0 };
   const EM = [[23, 31, 0, 1.3], [29, 19, 2.1, .4], [37, 26, 4.2, 2.8], [18, 40, 1.1, 5.0], [33, 22, 3.3, 3.9]].map(([tx, ty, a, b], i) => ({ tx, ty, a, b, sp: 6 + i, next: 1 + i * .45 }));
   const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -305,7 +305,7 @@ const HOMEBG = (() => {
   function loop(now) {
     if (!on) return; requestAnimationFrame(loop);
     const vis = ((!$('home').hidden && $('settings').hidden && $('atlas').hidden) || !$('atlas').hidden || !$('intro').hidden) && !window.__kOn; if (!vis || document.hidden || !fl) { last = 0; return; }
-    const lite = !fg.on && !revT0 && !bench; if (lite && last && now - last < 31) return;
+    const lite = (!fg.on && !revT0 && !bench) || forceLite; if (lite && last && now - last < 31) return;
     const ft = last ? now - last : 16; last = now; const dt = Math.min(.1, ft / 1000);
     if (bench) { bench.n++; if (bench.n > 2) bench.sum += ft; if (bench.n >= 22) { const avg = bench.sum / 20; bench = null; picked = true; if (avg > 21 && lvl < LV.length - 1) { lvl += avg > 32 ? 2 : 1; lvl = Math.min(lvl, LV.length - 1); try { build(); } catch (e) { on = false; return; } } revT0 = now; } }
     acc += dt; let n = 0; try { const SD = lite ? 1 / 30 : 1 / 60; while (acc >= SD && n < 2) { step(SD); acc -= SD; n++; } if (acc > SD * 2) acc = 0;
@@ -327,7 +327,7 @@ const HOMEBG = (() => {
     touchPx(cx, cy) { if (!fl) return; fg.tx = clamp(cx / innerWidth, 0, 1); fg.ty = 1 - clamp(cy / innerHeight, 0, 1); if (!fg.on) { fg.on = true; fg.fresh = true; } },
     touch(x, y) { if (!fl) return; fg.tx = x; fg.ty = y; if (!fg.on) { fg.on = true; fg.fresh = true; } },
     release() { fg.on = false; },
-    host(el) { if (cv && el && cv.parentNode !== el) el.insertBefore(cv, el.firstChild); },
+    host(el) { if (cv && el && cv.parentNode !== el) el.insertBefore(cv, el.firstChild); forceLite = !!(el && el.id === 'aView'); },
   };
 })();
 

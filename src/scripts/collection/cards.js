@@ -92,7 +92,7 @@ button:focus-visible{outline:2px solid rgb(var(--dna));outline-offset:2px}
 
 .track>.view:not(.on) *,.track>.view:not(.on){animation-play-state:paused!important}
 .track.drag>.view *{animation-play-state:paused!important}
-.cgrid .slot{transform:translateZ(0)}
+.cgrid .slot{transform:translateZ(0)}.cgrid .slot.offs *{animation-play-state:paused!important}
 .stage:not(.on) *{animation:none!important}
 .pinnote{margin:10px 2px 0;font:600 12px var(--f);color:rgba(255,255,255,.6)}.pinnote b{color:#fff}
 .acts .act{min-width:0;flex:1}
@@ -508,6 +508,7 @@ let colSig='';function renderCol(){const g=$('#cgrid');const sg=JSON.stringify(s
   $('#pN').textContent=have+'/50';{const pc=save.pinCard&&st.own[save.pinCard]?SET.find(x=>x.no===save.pinCard):null,pn=$('#pinNote');if(pn){pn.hidden=!pc;if(pc)pn.innerHTML=`<b></b> pinned · +${RANK[pc.r]>=1?2:1} chroma on colors from its country or hue`;if(pc)pn.querySelector('b').textContent=pc.n;}}$('#pB').style.width=(have*2)+'%';$('#pS').textContent=st.own[51]?'+ secret':'';}
 /* ---------- backs + fronts gallery ---------- */
 
+{const _rc=renderCol;renderCol=function(){_rc();try{const io=renderCol._io||(renderCol._io=new IntersectionObserver(es=>es.forEach(x=>x.target.classList.toggle('offs',!x.isIntersecting)),{rootMargin:'160px'}));$('#cgrid').querySelectorAll('.slot').forEach(s=>io.observe(s));}catch(e){}};}
 function lens(v){const b=R.querySelector(`.seg button[data-s="${v}"]`),L=R.querySelector('.seg .lens');if(!b||!L||!b.offsetWidth)return;L.style.width=b.offsetWidth+'px';L.style.transform=`translateX(${b.offsetLeft}px)`;}
 let ppI=0,ppN=0;
 let ppSig='';function renderPP(){const B=$('#book');{const pl=save.palette||[],sg=pl.length+'|'+(save.level||1)+'|'+(save.eye||0)+'|'+pl.reduce((a,p)=>a+(p.p||0),0).toFixed(1);if(sg===ppSig&&B.children.length)return;ppSig=sg;}const got={};(save.palette||[]).forEach(p=>{if((p.p||0)>=50)got[p.n]=p;});let CP={};try{CP=countryProg();}catch(e){}
