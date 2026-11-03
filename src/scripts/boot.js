@@ -1,0 +1,4 @@
+<script>
+(function(){const SEL='.primary,.ybtn,.rkrow,.hintopt,.idrow,.mxbring,.tog,.lbcard,.hs,.ymeter,.yes,.no,.idgo,.sharebtn,.jmore,.rnew';
+document.addEventListener('pointerdown',function(e){var b=e.target&&e.target.closest&&e.target.closest(SEL);if(!b||b.disabled||b.classList.contains('wait'))return;try{var cs=getComputedStyle(b);if(cs.position==='static')b.style.position='relative';if(cs.overflow!=='hidden')b.style.overflow='hidden';var f=document.createElement('i');f.className='lfill';b.appendChild(f);setTimeout(function(){f.remove();},560);}catch(x){}},{passive:true,capture:true});})();
+</script>

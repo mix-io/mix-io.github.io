@@ -1,0 +1,1 @@
+<script>document.addEventListener('gesturestart',e=>{if(!(e.target&&e.target.closest&&e.target.closest('#aView')))e.preventDefault();},{passive:false});document.addEventListener('dblclick',e=>{if(!(e.target&&e.target.closest&&e.target.closest('#aView')))e.preventDefault();},{passive:false});</script>
