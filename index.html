@@ -1732,7 +1732,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6ae972b1'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6ae97399'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
@@ -2986,7 +2986,7 @@ function reveal() {
     save.dstreak = ds; save.dlast = day; save.daily = { d: day, p: pct }; extra = 0;
   }
   const rankUp = rankOf(save.eye)[0] > rankOf(eye0)[0];
-  if (!isRep) { const CB = []; let cg = 0; if (pct >= 50) { const tb = target.tier || 1, ab = pct >= 97 ? 4 : pct >= 85 ? 2 : pct >= 70 ? 1 : 0; cg = tb + ab; CB.push(['difficulty', tb]); if (ab) CB.push(['accuracy', ab]); if (pct >= 90 && drops > 0 && drops <= (target.drops || 99) + 2) { cg += 1; CB.push(['clean mix', 1]); } try { const pb = CARDS.pinBonus(target); if (pb) { cg += pb; CB.push(['pinned card', pb]); } } catch (e) {} if (daily) { cg *= 2; CB.push(['daily', '×2']); } } if (cg) { save.chroma = (save.chroma || 0) + cg; try { CARDS.earned(cg, CB); } catch (e) {} } }
+  if (!isRep) { const CB = []; let cg = 0; if (pct >= 50) { const tb = target.tier || 1, ab = pct >= 97 ? 4 : pct >= 85 ? 2 : pct >= 70 ? 1 : 0; cg = tb + ab + 1; CB.push(['match', 1]); CB.push(['difficulty', tb]); if (ab) CB.push(['accuracy', ab]); save.cStreak = (save.cStreak || 0) + 1; { const s = save.cStreak, sb = s >= 10 ? 5 : s >= 5 ? 3 : s >= 3 ? 2 : s >= 2 ? 1 : 0; if (sb) { cg += sb; CB.push(['streak ×' + s, sb]); } } if (pct >= 90 && drops > 0 && drops <= (target.drops || 99) + 2) { cg += 1; CB.push(['clean mix', 1]); } try { const pb = CARDS.pinBonus(target); if (pb) { cg += pb; CB.push(['pinned card', pb]); } } catch (e) {} if (daily) { cg *= 2; CB.push(['daily', '×2']); } } else save.cStreak = 0; if (cg) { save.chroma = (save.chroma || 0) + cg; try { CARDS.earned(cg, CB); } catch (e) {} } }
   holdCoins = true; if (!daily) { save.level += 1; save.lastPct = pct; if (pct < 50 && target.idx >= 0) (save.retry = save.retry || []).push({ i: target.idx, at: save.level + 7 + Math.floor(Math.random() * 5) }); }
   const st = save.stats; st.sum += pct; st.n += 1; st.mixed += 1; if (pct >= 97) st.perfects += 1;
   const today = new Date().toDateString(), yd = new Date(Date.now() - 864e5).toDateString();
@@ -3416,22 +3416,26 @@ const DIAL = { p: 0, v: 0, tgt: null, drag: null, raf: 0, last: 0, ci: 0, SP: 50
 const wrapI = i => ((i % N) + N) % N, wrapK = k => { k = ((k + N / 2) % N + N) % N - N / 2; return k; };
 function dialClick() { if (!actx || save.muted) return; try { const t = actx.currentTime, o = actx.createOscillator(), g = actx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(2400, t); o.frequency.exponentialRampToValueAtTime(1200, t + .02); g.gain.setValueAtTime(.025, t); g.gain.exponentialRampToValueAtTime(.0001, t + .03); o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + .035); } catch (e) {} }
 function layoutDial() {
-  const half = Math.max(120, strip.clientWidth / 2), SP = DIAL.SP;
-  for (let i = 0; i < N; i++) { const k = wrapK(i - DIAL.p), x = SP * (.66 * k + .62 * Math.tanh(k * .85)), t = Math.min(1, Math.abs(x) / half), b = beads[i];
-    if (Math.abs(x) > half + 14) { if (b.style.visibility !== 'hidden') b.style.visibility = 'hidden'; continue; }
+  const half = Math.max(120, strip.clientWidth / 2), SP = DIAL.SP, dt = DIAL.ldt || .016, kk = 1 - Math.exp(-dt * 20);
+  const fT = DIAL.drag ? clamp(DIAL.drag.x - (strip.getBoundingClientRect().left + strip.clientWidth / 2), -half, half) : 0; DIAL.fx = (DIAL.fx || 0) + (fT - (DIAL.fx || 0)) * (1 - Math.exp(-dt * (DIAL.drag ? 26 : 9))); const fx = DIAL.fx; let busy = Math.abs(fT - fx) > .5;
+  for (let i = 0; i < N; i++) { const k = wrapK(i - DIAL.p), x0 = SP * (.66 * k + .62 * Math.tanh(k * .85)), b = beads[i];
+    if (Math.abs(x0) > half + 24) { if (b.style.visibility !== 'hidden') b.style.visibility = 'hidden'; b._s = .5; continue; }
     if (b.style.visibility) b.style.visibility = '';
-    const sc = .68 + .64 * Math.exp(-k * k / 1.25), y = 20 * (1.32 - sc) + 4; b.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) scale(${sc.toFixed(3)})`; b.style.opacity = (1 - .65 * t * t).toFixed(3); b.style.zIndex = String(100 - Math.round(Math.abs(k) * 10)); }
+    const d = x0 - fx, m = Math.exp(-d * d / (SP * SP * 1.35)), x = x0 + Math.sign(d) * SP * .55 * (1 - Math.exp(-Math.abs(d) / SP)) * (.4 + .6 * Math.exp(-fx * fx / (SP * SP * 9))), tS = .5 + .82 * m;
+    b._s = b._s == null ? tS : b._s + (tS - b._s) * kk; if (Math.abs(tS - b._s) > .003) busy = true; const sc = b._s, t = Math.min(1, Math.abs(x) / half), y = 26 * (1.32 - sc) - 2;
+    b.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) scale(${sc.toFixed(3)})`; b.style.opacity = (1 - .6 * t * t).toFixed(3); b.style.zIndex = String(100 - Math.round(Math.abs(d) / SP * 10)); }
+  DIAL.busy = busy;
   const ci = wrapI(Math.round(DIAL.p)); if (ci !== DIAL.ci) { DIAL.ci = ci; setSel(ci); haptic(4); dialClick(); }
 }
 function dialStep(now) {
-  const dt = Math.min(.05, (now - (DIAL.last || now)) / 1000); DIAL.last = now; let go = true;
+  const dt = Math.min(.05, (now - (DIAL.last || now)) / 1000); DIAL.last = now; DIAL.ldt = dt || .016; let go = true;
   if (!DIAL.drag) {
     if (DIAL.coast) { const c = DIAL.coast; DIAL.p += DIAL.v * dt; DIAL.v *= Math.exp(-c.k * dt); if (Math.abs(c.tgt - DIAL.p) < .04 || Math.abs(DIAL.v) < .6 || Math.sign(c.tgt - DIAL.p) !== c.dir) { DIAL.coast = null; DIAL.tgt = c.tgt; } }
     else if (DIAL.tgt === null && Math.abs(DIAL.v) > 2.5) { const d0 = DIAL.v / 2.4, tg = Math.round(DIAL.p + d0), dist = tg - DIAL.p; if (Math.sign(dist) === Math.sign(DIAL.v) && Math.abs(dist) > .2) DIAL.coast = { tgt: tg, k: Math.max(1.2, DIAL.v / dist), dir: Math.sign(dist) }; else DIAL.tgt = tg; }
     else { if (DIAL.tgt === null) DIAL.tgt = Math.round(DIAL.p + DIAL.v * .12); const acc = (DIAL.tgt - DIAL.p) * 210 - DIAL.v * 19; DIAL.v += acc * dt; DIAL.p += DIAL.v * dt;
       if (Math.abs(DIAL.tgt - DIAL.p) < .002 && Math.abs(DIAL.v) < .05) { DIAL.p = DIAL.tgt = wrapI(Math.round(DIAL.tgt)); DIAL.v = 0; DIAL.tgt = null; go = false; } }
   }
-  layoutDial(); if (go || DIAL.drag) DIAL.raf = requestAnimationFrame(dialStep); else DIAL.raf = 0;
+  layoutDial(); if (go || DIAL.drag || DIAL.busy) DIAL.raf = requestAnimationFrame(dialStep); else DIAL.raf = 0;
 }
 function dialKick() { if (!DIAL.raf) { DIAL.last = 0; DIAL.raf = requestAnimationFrame(dialStep); } }
 strip.addEventListener('pointerdown', e => { audio(); try { strip.setPointerCapture(e.pointerId); } catch (x) {} DIAL.drag = { id: e.pointerId, x0: e.clientX, x: e.clientX, t: performance.now(), moved: 0, tgtEl: e.target.closest && e.target.closest('.bead') }; DIAL.v = 0; DIAL.tgt = null; DIAL.coast = null; dialKick(); e.preventDefault(); });
@@ -4574,9 +4578,9 @@ const hex2=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255);
 const RAR = {std:{label:'Standard',col:'#c9ccd2',glow:'rgba(255,255,255,.25)',sell:2},holo:{label:'Holo',col:'#dfe6ee',glow:'rgba(200,215,235,.6)',sell:5},liquid:{label:'Liquid',col:'#5ff0d0',glow:'var(--c)',sell:10},gold:{label:'Gold Prism',col:'#ffd58a',glow:'rgba(255,195,80,.85)',sell:30},secret:{label:'Secret Rare',col:'#ff9ae6',glow:'conic-gradient(#ff5ad1,#ffd66b,#5affc8,#5aa8ff,#b45aff,#ff5ad1)',sell:100}};
 const RANK = {std:0,holo:1,liquid:2,gold:3,secret:4};
 const PACKS = [
-  {id:'std',fp:[[.55,.6,.68],[.32,.36,.42],[.75,.78,.84],[.45,.5,.58]],cls:'p-std',name:'Standard',cost:15,odds:{std:82,holo:14,liquid:3.5,gold:.5},sw:['rgba(140,150,165,.6)','rgba(60,70,85,.6)','rgba(200,205,215,.5)']},
-  {id:'rare',fp:[[1,.25,.35],[.7,.06,.2],[1,.55,.45],[.85,.15,.3]],cls:'p-rare',name:'Rare',cost:40,odds:{std:45,holo:35,liquid:16,gold:4},floor:'holo',sw:['rgba(255,60,90,.75)','rgba(120,10,40,.7)','rgba(255,150,120,.5)']},
-  {id:'prem',fp:[[1,.8,.35],[.5,.25,1],[1,.4,.8],[.75,.55,1]],cls:'p-prem',name:'Premium',cost:100,odds:{std:10,holo:40,liquid:33,gold:16.75,secret:.25},floor:'liquid',sw:['rgba(255,205,90,.75)','rgba(130,60,255,.8)','rgba(255,90,200,.5)']}];
+  {id:'std',fp:[[.55,.6,.68],[.32,.36,.42],[.75,.78,.84],[.45,.5,.58]],cls:'p-std',name:'Standard',cost:15,odds:{std:86,holo:11.6,liquid:2.1,gold:.3},sw:['rgba(140,150,165,.6)','rgba(60,70,85,.6)','rgba(200,205,215,.5)']},
+  {id:'rare',fp:[[1,.25,.35],[.7,.06,.2],[1,.55,.45],[.85,.15,.3]],cls:'p-rare',name:'Rare',cost:40,odds:{std:54,holo:33,liquid:11,gold:2},floor:'holo',sw:['rgba(255,60,90,.75)','rgba(120,10,40,.7)','rgba(255,150,120,.5)']},
+  {id:'prem',fp:[[1,.8,.35],[.5,.25,1],[1,.4,.8],[.75,.55,1]],cls:'p-prem',name:'Premium',cost:100,odds:{std:22,holo:45,liquid:24,gold:8.85,secret:.15},floor:'liquid',sw:['rgba(255,205,90,.75)','rgba(130,60,255,.8)','rgba(255,90,200,.5)']}];
 /* ---------- state ---------- */
 const st={get bal(){return save.chroma||0},set bal(v){save.chroma=Math.max(0,Math.round(v))},get own(){return save.cards||(save.cards={})}};const keep=()=>{try{persist();}catch(e){}};
 const $=s=>R.querySelector(s);

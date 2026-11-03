@@ -268,7 +268,7 @@ function reveal() {
     save.dstreak = ds; save.dlast = day; save.daily = { d: day, p: pct }; extra = 0;
   }
   const rankUp = rankOf(save.eye)[0] > rankOf(eye0)[0];
-  if (!isRep) { const CB = []; let cg = 0; if (pct >= 50) { const tb = target.tier || 1, ab = pct >= 97 ? 4 : pct >= 85 ? 2 : pct >= 70 ? 1 : 0; cg = tb + ab; CB.push(['difficulty', tb]); if (ab) CB.push(['accuracy', ab]); if (pct >= 90 && drops > 0 && drops <= (target.drops || 99) + 2) { cg += 1; CB.push(['clean mix', 1]); } try { const pb = CARDS.pinBonus(target); if (pb) { cg += pb; CB.push(['pinned card', pb]); } } catch (e) {} if (daily) { cg *= 2; CB.push(['daily', '×2']); } } if (cg) { save.chroma = (save.chroma || 0) + cg; try { CARDS.earned(cg, CB); } catch (e) {} } }
+  if (!isRep) { const CB = []; let cg = 0; if (pct >= 50) { const tb = target.tier || 1, ab = pct >= 97 ? 4 : pct >= 85 ? 2 : pct >= 70 ? 1 : 0; cg = tb + ab + 1; CB.push(['match', 1]); CB.push(['difficulty', tb]); if (ab) CB.push(['accuracy', ab]); save.cStreak = (save.cStreak || 0) + 1; { const s = save.cStreak, sb = s >= 10 ? 5 : s >= 5 ? 3 : s >= 3 ? 2 : s >= 2 ? 1 : 0; if (sb) { cg += sb; CB.push(['streak ×' + s, sb]); } } if (pct >= 90 && drops > 0 && drops <= (target.drops || 99) + 2) { cg += 1; CB.push(['clean mix', 1]); } try { const pb = CARDS.pinBonus(target); if (pb) { cg += pb; CB.push(['pinned card', pb]); } } catch (e) {} if (daily) { cg *= 2; CB.push(['daily', '×2']); } } else save.cStreak = 0; if (cg) { save.chroma = (save.chroma || 0) + cg; try { CARDS.earned(cg, CB); } catch (e) {} } }
   holdCoins = true; if (!daily) { save.level += 1; save.lastPct = pct; if (pct < 50 && target.idx >= 0) (save.retry = save.retry || []).push({ i: target.idx, at: save.level + 7 + Math.floor(Math.random() * 5) }); }
   const st = save.stats; st.sum += pct; st.n += 1; st.mixed += 1; if (pct >= 97) st.perfects += 1;
   const today = new Date().toDateString(), yd = new Date(Date.now() - 864e5).toDateString();
@@ -698,22 +698,26 @@ const DIAL = { p: 0, v: 0, tgt: null, drag: null, raf: 0, last: 0, ci: 0, SP: 50
 const wrapI = i => ((i % N) + N) % N, wrapK = k => { k = ((k + N / 2) % N + N) % N - N / 2; return k; };
 function dialClick() { if (!actx || save.muted) return; try { const t = actx.currentTime, o = actx.createOscillator(), g = actx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(2400, t); o.frequency.exponentialRampToValueAtTime(1200, t + .02); g.gain.setValueAtTime(.025, t); g.gain.exponentialRampToValueAtTime(.0001, t + .03); o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + .035); } catch (e) {} }
 function layoutDial() {
-  const half = Math.max(120, strip.clientWidth / 2), SP = DIAL.SP;
-  for (let i = 0; i < N; i++) { const k = wrapK(i - DIAL.p), x = SP * (.66 * k + .62 * Math.tanh(k * .85)), t = Math.min(1, Math.abs(x) / half), b = beads[i];
-    if (Math.abs(x) > half + 14) { if (b.style.visibility !== 'hidden') b.style.visibility = 'hidden'; continue; }
+  const half = Math.max(120, strip.clientWidth / 2), SP = DIAL.SP, dt = DIAL.ldt || .016, kk = 1 - Math.exp(-dt * 20);
+  const fT = DIAL.drag ? clamp(DIAL.drag.x - (strip.getBoundingClientRect().left + strip.clientWidth / 2), -half, half) : 0; DIAL.fx = (DIAL.fx || 0) + (fT - (DIAL.fx || 0)) * (1 - Math.exp(-dt * (DIAL.drag ? 26 : 9))); const fx = DIAL.fx; let busy = Math.abs(fT - fx) > .5;
+  for (let i = 0; i < N; i++) { const k = wrapK(i - DIAL.p), x0 = SP * (.66 * k + .62 * Math.tanh(k * .85)), b = beads[i];
+    if (Math.abs(x0) > half + 24) { if (b.style.visibility !== 'hidden') b.style.visibility = 'hidden'; b._s = .5; continue; }
     if (b.style.visibility) b.style.visibility = '';
-    const sc = .68 + .64 * Math.exp(-k * k / 1.25), y = 20 * (1.32 - sc) + 4; b.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) scale(${sc.toFixed(3)})`; b.style.opacity = (1 - .65 * t * t).toFixed(3); b.style.zIndex = String(100 - Math.round(Math.abs(k) * 10)); }
+    const d = x0 - fx, m = Math.exp(-d * d / (SP * SP * 1.35)), x = x0 + Math.sign(d) * SP * .55 * (1 - Math.exp(-Math.abs(d) / SP)) * (.4 + .6 * Math.exp(-fx * fx / (SP * SP * 9))), tS = .5 + .82 * m;
+    b._s = b._s == null ? tS : b._s + (tS - b._s) * kk; if (Math.abs(tS - b._s) > .003) busy = true; const sc = b._s, t = Math.min(1, Math.abs(x) / half), y = 26 * (1.32 - sc) - 2;
+    b.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) scale(${sc.toFixed(3)})`; b.style.opacity = (1 - .6 * t * t).toFixed(3); b.style.zIndex = String(100 - Math.round(Math.abs(d) / SP * 10)); }
+  DIAL.busy = busy;
   const ci = wrapI(Math.round(DIAL.p)); if (ci !== DIAL.ci) { DIAL.ci = ci; setSel(ci); haptic(4); dialClick(); }
 }
 function dialStep(now) {
-  const dt = Math.min(.05, (now - (DIAL.last || now)) / 1000); DIAL.last = now; let go = true;
+  const dt = Math.min(.05, (now - (DIAL.last || now)) / 1000); DIAL.last = now; DIAL.ldt = dt || .016; let go = true;
   if (!DIAL.drag) {
     if (DIAL.coast) { const c = DIAL.coast; DIAL.p += DIAL.v * dt; DIAL.v *= Math.exp(-c.k * dt); if (Math.abs(c.tgt - DIAL.p) < .04 || Math.abs(DIAL.v) < .6 || Math.sign(c.tgt - DIAL.p) !== c.dir) { DIAL.coast = null; DIAL.tgt = c.tgt; } }
     else if (DIAL.tgt === null && Math.abs(DIAL.v) > 2.5) { const d0 = DIAL.v / 2.4, tg = Math.round(DIAL.p + d0), dist = tg - DIAL.p; if (Math.sign(dist) === Math.sign(DIAL.v) && Math.abs(dist) > .2) DIAL.coast = { tgt: tg, k: Math.max(1.2, DIAL.v / dist), dir: Math.sign(dist) }; else DIAL.tgt = tg; }
     else { if (DIAL.tgt === null) DIAL.tgt = Math.round(DIAL.p + DIAL.v * .12); const acc = (DIAL.tgt - DIAL.p) * 210 - DIAL.v * 19; DIAL.v += acc * dt; DIAL.p += DIAL.v * dt;
       if (Math.abs(DIAL.tgt - DIAL.p) < .002 && Math.abs(DIAL.v) < .05) { DIAL.p = DIAL.tgt = wrapI(Math.round(DIAL.tgt)); DIAL.v = 0; DIAL.tgt = null; go = false; } }
   }
-  layoutDial(); if (go || DIAL.drag) DIAL.raf = requestAnimationFrame(dialStep); else DIAL.raf = 0;
+  layoutDial(); if (go || DIAL.drag || DIAL.busy) DIAL.raf = requestAnimationFrame(dialStep); else DIAL.raf = 0;
 }
 function dialKick() { if (!DIAL.raf) { DIAL.last = 0; DIAL.raf = requestAnimationFrame(dialStep); } }
 strip.addEventListener('pointerdown', e => { audio(); try { strip.setPointerCapture(e.pointerId); } catch (x) {} DIAL.drag = { id: e.pointerId, x0: e.clientX, x: e.clientX, t: performance.now(), moved: 0, tgtEl: e.target.closest && e.target.closest('.bead') }; DIAL.v = 0; DIAL.tgt = null; DIAL.coast = null; dialKick(); e.preventDefault(); });
