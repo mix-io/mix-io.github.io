@@ -2,7 +2,7 @@
 /* ===== darker, neutral welcome + onboarding ===== */
 .wel{background:radial-gradient(120% 90% at 50% 38%,rgba(12,12,14,.66) 0%,rgba(5,5,6,.82) 60%,rgba(0,0,0,.94) 100%)!important}
 .wbg{--wc:190,192,200!important;opacity:.32!important}
-.wblob.bang{transform:scale(.02);opacity:0;transition:transform 1.6s cubic-bezier(.18,1.5,.32,1),opacity .2s}
+.wblob.bang{transform:scale(.02);opacity:0;transition:transform 1.6s var(--spring-snap),opacity .2s}
 .wblob.bang.in{transform:none;opacity:1}
 .wbang{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
 .wwm::after{background:radial-gradient(closest-side,rgba(255,255,255,.1),transparent)!important}
@@ -15,13 +15,13 @@
 .wel .idin{caret-color:#fff!important;transition:box-shadow .3s,background .3s}
 .wel .idin:focus{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.04))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 0 0 .5px rgba(255,255,255,.28),0 0 0 4px rgba(255,255,255,.05)!important}
 /* ===== one press feel everywhere ===== */
-.primary,.icon-btn,.rkx,.rkrow,.ppback,.round,.mxlink,.mxbring,.mxdel,.idrow,.hintopt,.sx,.shareic,.rnew,.ppset,.ppc,.jbtn,.lbcard,.tog,.yes,.no,.idgo,.twm,.sharebtn,.bmore{transition:transform .38s cubic-bezier(.3,1.5,.45,1),background .25s,box-shadow .25s,opacity .25s!important;-webkit-tap-highlight-color:transparent}
+.primary,.icon-btn,.rkx,.rkrow,.ppback,.round,.mxlink,.mxbring,.mxdel,.idrow,.hintopt,.sx,.shareic,.rnew,.ppset,.ppc,.jbtn,.lbcard,.tog,.yes,.no,.idgo,.twm,.sharebtn,.bmore{transition:transform .38s var(--spring-snap),background .25s,box-shadow .25s,opacity .25s!important;-webkit-tap-highlight-color:transparent}
 .primary:active,.icon-btn:active,.rkx:active,.rkrow:active,.ppback:active,.round:active,.mxlink:active,.mxbring:active,.mxdel:active,.idrow:active,.hintopt:active,.sx:active,.shareic:active,.rnew:active,.ppset:active,.ppc:active,.jbtn:active,.lbcard:active,.yes:active,.no:active,.idgo:active,.twm:active,.sharebtn:active,.bmore:active{transform:scale(.95)!important;transition-duration:.12s!important}
 .tog:active{transform:scale(.985)!important}
 /* ===== liquid switches ===== */
 .sw{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 .5px rgba(255,255,255,.14),inset 0 -6px 10px -8px rgba(0,0,0,.6)!important;transition:background .35s,box-shadow .35s!important}
 .sw.on{background:radial-gradient(120% 120% at 30% 0%,rgba(255,255,255,.35),transparent 55%),rgb(var(--dna-rgb))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -6px 10px -8px rgba(0,0,0,.35),0 0 14px rgba(var(--dna-rgb),.35)!important}
-.sw::after{background:radial-gradient(circle at 35% 28%,#fff,#eef1f4 55%,#c9ced5)!important;box-shadow:0 2px 6px rgba(0,0,0,.45),inset 0 -1px 2px rgba(0,0,0,.12)!important;transition:transform .5s cubic-bezier(.3,1.6,.45,1),width .25s cubic-bezier(.3,1.4,.5,1),margin .25s!important}
+.sw::after{background:radial-gradient(circle at 35% 28%,#fff,#eef1f4 55%,#c9ced5)!important;box-shadow:0 2px 6px rgba(0,0,0,.45),inset 0 -1px 2px rgba(0,0,0,.12)!important;transition:transform .5s var(--spring-snap),width .25s var(--spring-snap),margin .25s!important}
 .sw:active::after{width:28px!important}
 .sw.on:active::after{margin-left:-6px}
 /* ===== scrolling ===== */

@@ -247,8 +247,8 @@ function typeName() {
   el.innerHTML = h; el.style.opacity = '';
 }
 function replayTarget(n) { const i = COLORS.findIndex(c => c[0] === n); if (i >= 0) { const c = COLORS[i], recipe = c[1].map(([a, k]) => ({ i: a, n: k })), A = recipeA(c[1], c[2]); return { A, rgb: displayColor(A), recipe, dil: c[2], drops: recipe.reduce((s, r) => s + r.n, 0), name: c[0], tier: xTier(c), idx: i }; } const f = FIRST.find(f => f[0] === n); if (f) { const A = recipeA(f[1], 0); return { A, rgb: displayColor(A), recipe: f[1].map(([a, k]) => ({ i: a, n: k })), dil: 0, drops: f[1][0][1], name: f[0], tier: 1, idx: -1 }; } return null; }
-let REPLAY = null;
-function startReplay(n) { if (!replayTarget(n)) return; audio(); if (state === 'play' && glassLog.length) saveGlass(); resetGlass(); REPLAY = n; MODE = 'replay'; started = true; $('atlas').hidden = true; ATLAS.close(); hideHome(); setNav('play'); setTarget(); updateStat(); cbLine(); }
+let REPLAY = null, REPLAY_BEST = 0;
+function startReplay(n) { if (!replayTarget(n)) return; audio(); if (state === 'play' && glassLog.length) saveGlass(); resetGlass(); REPLAY = n; REPLAY_BEST = ((save.palette || []).find(p => p.n === n) || {}).p || 0; MODE = 'replay'; started = true; $('atlas').hidden = true; ATLAS.close(); hideHome(); setNav('play'); setTarget(); updateStat(); cbLine(); }
 
 const HINT_COST = [0, 6, 14]; // % taken off this color's score after one / both hints
 function hintKey() { return target ? (MODE + ':' + target.name) : ''; }
