@@ -1029,7 +1029,7 @@ body.bgp .hbg{filter:brightness(.6) saturate(.9)}
 .wel .wbg{opacity:.55}
 .wstep .whl,.wstep .idfav,.wstep .idin,.mxf .idin{touch-action:auto}
 .wplay{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:8px 14px;border-radius:999px;font:600 12.5px var(--f-ui);letter-spacing:.02em;color:rgba(220,240,255,.8);background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.025));box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 0 0 .5px rgba(255,255,255,.12);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:welPulse 3.2s 2s ease-in-out infinite}
-.wplay i{width:7px;height:7px;border-radius:50%;background:#9fe0ff;box-shadow:0 0 10px #9fe0ff}
+.wplay i{width:7px;height:7px;border-radius:50%;background:#e8eaee;box-shadow:0 0 10px rgba(255,255,255,.7)}
 .wstep h1,.wstep h2,.wstep .wsub,.wstep .wk,.mixa .mxh,.mixa .wsub,.mixa .wk{text-shadow:0 2px 24px rgba(0,0,0,.55)}
 .mxbring{display:block;width:100%;margin-top:14px;padding:14px 16px;border-radius:18px;border:0;text-align:center;color:#fff;background:linear-gradient(180deg,rgba(var(--dna-rgb),.28),rgba(var(--dna-rgb),.1));box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 0 0 .5px rgba(var(--dna-rgb),.5),0 10px 30px -14px rgba(var(--dna-rgb),.8)}
 .mxbring b{display:block;font:700 15.5px var(--f-ui)}.mxbring small{display:block;margin-top:3px;font:500 12px var(--f-ui);color:rgba(255,255,255,.65)}
@@ -1528,7 +1528,7 @@ function openAccountSheet(first, why) {
     <button class="primary wgo" id="mxGo">${mode === 'new' ? 'create my account' : 'sign in'}</button>
     <div class="mxnote" id="mxN"></div>
     ${!ON_SITE && mainLevel() > 1 ? `<button class="mxbring" data-bring="1"><b>bring my saved game</b><small>level ${mainLevel()} · opens mix-io.github.io with your progress</small></button>` : ''}
-    ${failed ? '<button class="mxlink" data-off="1">play offline for now</button>' : ''}<div class="wplay"><i></i>take a pause · play with the water behind</div></div>`; };
+    ${failed ? '<button class="mxlink" data-off="1">play offline for now</button>' : ''}</div>`; };
   draw(); W.hidden = false; BGP.on(W);
   const note = t => { const n = $('mxN'); n.textContent = t; n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop'); };
   W.onclick = async e => {
@@ -1668,7 +1668,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6ae95b14'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6ae95b61'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
