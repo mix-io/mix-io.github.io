@@ -1093,8 +1093,9 @@ body.bgp .hbg{filter:brightness(.6) saturate(.9)}
 @media (max-height:700px){.home{padding-top:calc(env(safe-area-inset-top,0px) + 40px)!important}.hring{margin-top:0!important}}
 
 /* studio: float tabs */
-.tabin{animation:tabFloat .46s cubic-bezier(.2,.9,.25,1.05) both!important}
-@keyframes tabFloat{0%{opacity:0;transform:translate3d(0,14px,0) scale(.985)}100%{opacity:1;transform:none}}
+.tabin{animation:tabFloat .26s ease-out both!important}
+@keyframes tabFloat{0%{opacity:0}100%{opacity:1}}
+#tabBack{position:absolute;inset:0;z-index:18;background:var(--paper);pointer-events:none;display:none}#tabBack.on{display:block}#tabBack.dk{background:#000}
 #home.tabin>*:not(.hbg){animation:tabFloat .5s cubic-bezier(.2,.9,.25,1.05) both}
 #home.tabin{animation:none!important}
 /* studio: liquid lock-it-in */
@@ -1730,7 +1731,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6ae96b8a'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6ae96c1b'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
@@ -2051,7 +2052,7 @@ function navDrop(t) { const nv = $('nav'); if (!nv) return; let d = $('navDrop')
   d._x = x; d._w = w; }
 addEventListener('resize', () => { try { const d = $('navDrop'); if (d) d._x = null; navDrop(navMode); } catch (e) {} });
 function goTab(t) {
-  audio(); try { document.body.classList.toggle('covered', t === 'cards' || t === 'atlas' || t === 'you'); } catch (e) {} $('shop').hidden = true; $('settings').hidden = true; if (t !== 'cards') try { CARDS.shut(); } catch (e) {} if (t !== 'atlas') { $('atlas').hidden = true; ATLAS.close(); } $('coinVal').textContent = save.coins; coinShown = save.coins;
+  audio(); try { document.body.classList.toggle('covered', t === 'cards' || t === 'atlas' || t === 'you'); let tb = $('tabBack'); if (!tb) { tb = document.createElement('div'); tb.id = 'tabBack'; $('app').appendChild(tb); } tb.classList.toggle('on', t !== 'play'); tb.classList.toggle('dk', t === 'atlas' || t === 'cards'); } catch (e) {} $('shop').hidden = true; $('settings').hidden = true; if (t !== 'cards') try { CARDS.shut(); } catch (e) {} if (t !== 'atlas') { $('atlas').hidden = true; ATLAS.close(); } $('coinVal').textContent = save.coins; coinShown = save.coins;
   if (t === 'home') { showHome(); setNav('home'); }
   else if (t === 'play') { if (!$('home').hidden) $('hPlay').click(); setNav('play'); }
   else if (t === 'atlas') { $('atlas').hidden = false; tabIn($('atlas')); ATLAS.open(); setNav('atlas'); }
