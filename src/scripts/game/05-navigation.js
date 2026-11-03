@@ -22,7 +22,11 @@ function resetGlass() { $('shareIc').hidden = true; $('res').hidden = true; $('r
 function dailyCD() { const n = Date.now(), m = (Date.UTC(2026, 10, 1) + dayNo() * 864e5) - n, h = Math.floor(m / 3.6e6), mm = Math.floor(m / 6e4) % 60; const el = document.querySelector('#hDaily .dcd'); if (el) { const dd = save.daily && save.daily.d === dayNo() && save.daily.beat != null ? `beat ${save.daily.beat}% of the world · ` : ''; el.textContent = `${dd}next in ${h}h ${String(mm).padStart(2, '0')}m`; } }
 setInterval(() => { if (!$('home').hidden) dailyCD(); }, 30000);
 function dnaToHome() { try { const G = dnaGL(); if (!G) return; if (!DNA.sig) { DNA.sig = dnaAccent() || [.7, .74, .8]; DNA.energy = DNA.energy || 1; DNA.speed = DNA.speed || 1; } const hb = $('hBlob'); if (G.cv.parentNode !== hb) hb.appendChild(G.cv); DNA.cv = G.cv; if (!DNA.raf) DNA.raf = requestAnimationFrame(dnaLoop); } catch (e) {} }
-function showHome() {
+function isBday() { const d = new Date(); return !!(save.idn && save.idn.m === d.getMonth() + 1 && save.idn.d === d.getDate()); }
+function bdayMoment() { if (!isBday()) return; const y = new Date().getFullYear(); save.bdays = save.bdays || []; if (save.bdays.includes(y)) return; save.bdays.push(y); persist(); const c = idColor(save.idn), hx = rgbToHex(c), nm = (save.idn.name || '').toLowerCase();
+  const o = document.createElement('div'); o.className = 'bdov'; o.innerHTML = `<div class="bdcard" style="--c:${hx}"><div class="bdart"></div><div class="bdnm">happy birthday${nm ? ', ' + nm : ''}</div><div class="bdft"><span>birthday card</span><span>${y}</span></div></div><small>tap to keep it</small>`; $('app').appendChild(o); requestAnimationFrame(() => o.classList.add('on')); try { buzz([6, 80, 6]); } catch (e) {}
+  o.addEventListener('click', () => { o.classList.remove('on'); setTimeout(() => o.remove(), 500); }); }
+function showHome() { try { let bl = $('hBday'); if (isBday()) { if (!bl) { bl = document.createElement('div'); bl.id = 'hBday'; bl.className = 'hbday'; const f = $('hFound'); f.parentNode.insertBefore(bl, f.nextSibling); } bl.textContent = 'happy birthday ✦ your glass is glowing today'; setTimeout(bdayMoment, 1600); } else if (bl) bl.remove(); } catch (e) {}
   setTimeout(() => HOMEBG.ensure(), 0); setTimeout(dnaToHome, 0);
   const ey = (save.eye ?? CH0), rk = rankOf(ey), day = dayNo(), sk = streakNow();
   const nx = nextRank(ey), pr = nx ? clamp((ey - rk[0]) / (nx[0] - rk[0]), 0, 1) : 1;

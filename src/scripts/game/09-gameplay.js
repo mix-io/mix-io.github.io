@@ -411,6 +411,8 @@ function drawFG(dt) {
     [[.9 * Dp, 9, 5, .9], [.62 * Dp, -6, 8, .7]].forEach(([sc, vx, vy, al], li) => { const ph = tt * sp; pat.setTransform(new DOMMatrix().translateSelf(vx * ph * Dp + li * 37, vy * ph * Dp + li * 53).rotateSelf(li * 23 + Math.sin(tt * .2) * 6).scaleSelf(sc)); k.globalAlpha = al; k.fillStyle = pat; k.fillRect(0, 0, sz, sz); });
     k.globalAlpha = 1; const tc = tint > .01 ? T.map(v => clamp(.25 + v * .9, 0, 1)) : [1, 1, 1]; k.globalCompositeOperation = 'source-in'; k.fillStyle = css(tc); k.fillRect(0, 0, sz, sz);
     k.globalCompositeOperation = 'destination-in'; const fg2 = k.createRadialGradient(sz / 2, sz / 2, 0, sz / 2, sz / 2, sz / 2); fg2.addColorStop(0, 'rgba(0,0,0,1)'); fg2.addColorStop(.55, 'rgba(0,0,0,.55)'); fg2.addColorStop(1, 'rgba(0,0,0,0)'); k.fillStyle = fg2; k.fillRect(0, 0, sz, sz);
+    { const nw = performance.now(); if (!window.__clT || nw - window.__clT > 250) { window.__clT = nw; let k = 0; try { if (target && drops > 0 && (state === 'play' || state === 'mixing')) { const dE = dE00(toLab(target.rgb), toLab(displayColor(meanA))); k = Math.exp(-Math.pow(dE / 18, 2)); } } catch (e) {} window.__clK = k; } window.__clS = (window.__clS || 0) + ((window.__clK || 0) - (window.__clS || 0)) * .08; }
+    { const ck = window.__clS || 0; if (ck > .02) { c.save(); c.globalCompositeOperation = 'lighter'; c.globalAlpha = ck * .5; const cg = c.createRadialGradient(cx, bottom + ry * 1.15, 0, cx, bottom + ry * 1.15, R * (1.1 - ck * .45)); const tc = displayColor(meanA); cg.addColorStop(0, css(tc, .55)); cg.addColorStop(.35 + ck * .4, css(tc, .22)); cg.addColorStop(1, css(tc, 0)); c.fillStyle = cg; c.beginPath(); c.ellipse(cx, bottom + ry * 1.15, R * (1.1 - ck * .45), R * (1.1 - ck * .45) * .25, 0, 0, Math.PI * 2); c.fill(); if (ck > .9 && target) { c.globalAlpha = (ck - .9) * 6; c.strokeStyle = css(target.rgb, .7); c.lineWidth = 1.5; c.beginPath(); c.ellipse(cx, bottom + ry * 1.15, R * .42, R * .42 * .25, 0, 0, Math.PI * 2); c.stroke(); } c.restore(); } }
     c.save(); c.globalCompositeOperation = 'lighter'; c.globalAlpha = (LIGHT_BG[save.bg] ? .1 : .2) + en * .16; c.translate(cx + Math.sin(tt * .45) * gw * .03, bottom + ry * 1.15); c.scale(1, .25); c.drawImage(oc, -R, -R, R * 2, R * 2); c.restore();
   } catch (e) {}
 
@@ -595,6 +597,8 @@ function drawFG(dt) {
     const col = DYES[b.dye].rgb.map(v => lerp(v, 1, 0.45));
     c.fillStyle = css(col, 1 - b.t / 0.5); c.beginPath(); c.arc(b.x, b.y, b.r, 0, PI * 2); c.fill();
   }
+  if (state === 'play' && typeof isBday === 'function' && (window.__bd ?? (window.__bd = isBday()))) { const tt = performance.now() / 1000, dc = idColor(save.idn); c.save(); c.globalCompositeOperation = 'lighter'; c.lineWidth = 1.6; c.shadowBlur = 12; c.shadowColor = 'rgba(255,214,120,.8)'; c.strokeStyle = `rgba(255,214,120,${.35 + .12 * Math.sin(tt * 1.4)})`; c.beginPath(); c.ellipse(G.cx, G.top, G.gw / 2, G.gw * .085, 0, 0, Math.PI * 2); c.stroke(); c.shadowColor = css(dc, .8); c.strokeStyle = css(dc, .25 + .1 * Math.sin(tt * 1.4 + 1.5)); c.beginPath(); c.ellipse(G.cx, G.top, G.gw / 2 + 2, G.gw * .085 + 1.5, 0, 0, Math.PI * 2); c.stroke(); c.restore(); }
+  if (gp && !gp.stir && state === 'play') { const gk = Math.min(1, (performance.now() - gp.t0) / 160); c.save(); c.globalCompositeOperation = 'lighter'; c.strokeStyle = css(DYES[sel].rgb, .55 * gk); c.lineWidth = 2; c.shadowColor = css(DYES[sel].rgb, .9); c.shadowBlur = 14 * gk; c.beginPath(); c.ellipse(G.cx, G.top, G.gw / 2, G.gw * .085, 0, 0, Math.PI * 2); c.stroke(); c.restore(); }
   // falling droplets
   for (const d of droplets) {
     if (d.state === 'done') continue;
@@ -659,7 +663,7 @@ fgC.addEventListener('pointermove', e => {
 const endGlass = e => {
   if (!gp || e.pointerId !== gp.id) return;
   const quick = performance.now() - gp.t0 < 450;
-  const inX = gp.x0 > G.gx - 24 && gp.x0 < G.gx + G.gw + 24;
+  const inX = gp.x0 > G.gx - 40 && gp.x0 < G.gx + G.gw + 40;
   if (!gp.stir && quick && inX && e.type === 'pointerup') { if (!DRAIN) ripples.push({ x: clamp(gp.x0, G.wx + 8, G.wx + G.ww - 8), t: 0, a: 0.55 }); addDrop(gp.x0); }
   if (gp.stir) bumpHint();
   gp = null; rod = null;
@@ -871,3 +875,4 @@ function dnaBurst(host) { if (!host) return; const c = DNA.sig || [.6, .8, .9], 
   for (let k = 0; k < 9; k++) { const a = Math.random() * Math.PI * 2, d = 60 + Math.random() * 55, z = 4 + Math.random() * 7, sp = document.createElement('b'); sp.className = 'dbd'; sp.style.cssText = `--x:${(Math.cos(a) * d).toFixed(0)}px;--y:${(Math.sin(a) * d).toFixed(0)}px;width:${z.toFixed(1)}px;height:${z.toFixed(1)}px;--c:${Math.random() < .5 ? hx : lt};animation-delay:${(Math.random() * .08).toFixed(2)}s;animation-duration:${(1.7 + Math.random() * .9).toFixed(2)}s`; box.appendChild(sp); }
   const amb = host.parentNode && host.parentNode.querySelector('.eamb'); if (amb) { amb.classList.remove('kick'); void amb.offsetWidth; amb.classList.add('kick'); }
   setTimeout(() => box.remove(), 1500); }
+try { $('aLens').addEventListener('click', e => { e.stopPropagation(); const on = ATLAS.toggleLens(); const b = $('aLens'); b.classList.toggle('on', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); buzz(5); }); } catch (e) {}

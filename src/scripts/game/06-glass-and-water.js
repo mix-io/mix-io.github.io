@@ -292,7 +292,7 @@ function addDrop(px) {
   if (droplets.filter(d => d.state !== 'done').length > 4) return;
   const d = DYES[sel];
   const x = clamp(px, G.wx + G.ww * 0.1, G.wx + G.ww * 0.9);
-  droplets.push({ x, y: G.top - G.gh * 0.16, vy: 0, t: 0, state: 'form', dye: sel, wob: Math.random() * 6 });
+  droplets.push({ x: clamp(px, G.gx - 40, G.gx + G.gw + 40), tx: x, y: G.top - G.gh * 0.16, vy: 0, t: 0, state: 'form', dye: sel, wob: Math.random() * 6 });
 }
 function saveGlass() { if (state !== 'play' && state !== 'mixing') return; if (MODE === 'replay') return; if (MODE === 'daily') save.wipD = { day: dayNo(), drops: glassLog.slice() }; else save.wip = { lvl: save.level, drops: glassLog.slice(), stirred: unmixed < .05 }; persist(); }
 function restoreGlass(g) {
@@ -338,6 +338,7 @@ function landDrop(dp) {
     for (let k = 0; k < P.n; k++) splat(F.vel, u + 0.04 * (k % 2 ? 1 : -1) * P.w, sv - 0.05 - k * .02, [j() * P.side, P.up * j(), 0], 0.0012 * P.r);
     { const dn = P.v; setTimeout(() => { if (!fluidOK) return; const sv2 = surfaceV(); splat(F.vel, u, sv2 - .07, [0, -dn * .55, 0], .0011); splat(F.vel, u - .03, sv2 - .06, [-dn * .12, dn * .22, 0], .0008); splat(F.vel, u + .03, sv2 - .06, [dn * .12, dn * .22, 0], .0008); }, 110);
       setTimeout(() => { if (!fluidOK) return; const sv2 = surfaceV(); for (let k = 0; k < 3; k++) { const ox = (k - 1) * .022 * P.w + j() * .01, oy = sv2 - .1 - Math.random() * .05; splatDye(u + ox, oy, amt.map(a => a * .05), .00022 * P.r); splat(F.vel, u + ox, oy, [ox * 260, -dn * (.35 + Math.random() * .25), 0], .0005); } }, 260); }
+    { const nT = 2 + Math.min(3, P.n), dn = P.v; setTimeout(() => { if (!fluidOK) return; const sv3 = surfaceV(); for (let k = 0; k < nT; k++) { const sgn = k % 2 ? 1 : -1, ox = sgn * (.012 + k * .009) * P.w, oy = sv3 - .09 - k * .028 - Math.random() * .02; splatDye(u + ox, oy, amt.map(a => a * .035), .00016 * P.r); splat(F.vel, u + ox, oy, [sgn * (40 + P.side * .35), -dn * (.28 + k * .05), 0], .00045); } }, 480); setTimeout(() => { if (!fluidOK) return; const sv3 = surfaceV(); for (let k = 0; k < nT; k++) { const sgn = k % 2 ? -1 : 1, ox = sgn * (.02 + k * .012) * P.w, oy = sv3 - .16 - k * .03; splat(F.vel, u + ox, oy, [sgn * (24 + P.side * .2), -dn * .18, 0], .0004); } }, 900); }
     if (P.late) setTimeout(() => { if (!fluidOK) return; for (let k = 0; k < 2; k++) splat(F.vel, u + (k ? .05 : -.05), .12, [(k ? 1 : -1) * P.late, 30, 0], .002); }, 650);
   }
   ripples.push({ x: dp.x, t: 0 });

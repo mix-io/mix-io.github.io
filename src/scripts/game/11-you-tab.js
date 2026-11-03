@@ -104,7 +104,7 @@ function frame(now) {
   // particles
   for (const d of droplets) {
     if (d.state === 'done') continue;
-    d.t += dt;
+    d.t += dt; if (d.tx != null) d.x += (d.tx - d.x) * (1 - Math.exp(-dt * 10));
     if (d.state === 'form' && d.t > 0.22) { d.state = 'fall'; }
     if (d.state === 'fall') { d.vy += 2400 * dt; d.y += d.vy * dt; if (d.y >= G.y0) { d.state = 'done'; landDrop(d); } }
   }
