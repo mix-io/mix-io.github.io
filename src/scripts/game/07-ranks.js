@@ -106,3 +106,5 @@ function checkSets() { try { const got = {}; save.palette.forEach(p => got[p.n] 
 /* complete a country: Natural Earth 110m outlines (public domain), lat/lng ×5 */
 @@ data/outl.js @@
 let CMP_PEND = null, cmpBusy = false, cpLog = false;
+const medalOf = v => !v || v.n < 3 ? 0 : v.k >= v.n ? 3 : v.k / v.n >= .75 ? 2 : v.k / v.n >= .5 ? 1 : 0;
+function countryTiers() { const m = {}; try { const CP = countryProg(); for (const cc in CP) m[cc] = medalOf(CP[cc]); } catch (e) {} return m; }
