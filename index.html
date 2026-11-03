@@ -1732,7 +1732,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6ae9711f'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6ae97249'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
@@ -2119,7 +2119,7 @@ function drawRefr(c, T) {
   if (!refrW) return; const key = T.map(v => Math.round(v * 24)).join();
   if (key !== refrKey) { refrKey = key; refrT = refrT || document.createElement('canvas'); refrT.width = refrW.width; refrT.height = refrW.height; const x = refrT.getContext('2d'); x.clearRect(0, 0, refrT.width, refrT.height); for (let i = 0; i < 5; i++) x.drawImage(refrW, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = css(T.map(v => v * .5)); x.fillRect(0, 0, refrT.width, refrT.height); }
   const { gx, wt, iw, ryIn, cx, y0, y1 } = G; c.save(); c.beginPath(); c.ellipse(cx, y0, iw / 2, ryIn, 0, Math.PI, 0, false); c.lineTo(gx + wt + iw, y1); c.ellipse(cx, y1, iw / 2, ryIn, 0, 0, Math.PI, false); c.closePath(); c.clip();
-  c.globalAlpha = .9; c.drawImage(refrT, gx + wt, y0 - ryIn, iw, y1 + ryIn - y0 + ryIn); c.restore();
+  c.globalAlpha *= .9; c.drawImage(refrT, gx + wt, y0 - ryIn, iw, y1 + ryIn - y0 + ryIn); c.restore();
 }
 function drawBG() {
   const c = bgx; c.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -2244,7 +2244,7 @@ void main(){
  T*=1.0+edge*(0.03+0.04*uE)*sin(x*7.0+uTime*.6+sin(vUv.y*6.0+uTime*.45)*1.6);
  float us=exp(-pow((1.0-yn)/0.035,2.0)); T=mix(T,min(T*1.35+0.08,vec3(1.0)),us*0.55*(0.5+0.5*circ));
  T*=1.0-0.06*exp(-pow(yn/0.08,2.0));
- gl_FragColor=vec4(T*uLight*mask,mask); }`,
+ float dn=clamp((1.0-min(T.r,min(T.g,T.b)))*4.0,0.0,1.0); float al=max(mix(0.1,1.0,dn),us*0.4+0.14*smoothstep(0.86,1.0,ax)); gl_FragColor=vec4(T*uLight*mask*al,mask*al); }`,
   };
   const compile = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
   const vs = compile(gl.VERTEX_SHADER, VS);
@@ -3132,10 +3132,10 @@ function drawFG(dt) {
   // fallback water when WebGL is unavailable
   if (!fluidOK) {
     c.save(); c.beginPath(); c.ellipse(cx, y0, iw / 2, ryIn, 0, PI, 0, false); c.lineTo(gx + wt + iw, y1); c.ellipse(cx, y1, iw / 2, ryIn, 0, 0, PI, false); c.closePath();
-    const L = LIGHT_BG[save.bg] ? 1 : 0.72; c.fillStyle = css([T[0] * 0.985 * L, T[1] * 0.993 * L, T[2] * L], 1); c.globalAlpha = 0.95; c.fill(); c.restore();
+    const L = LIGHT_BG[save.bg] ? 1 : 0.72; c.fillStyle = css([T[0] * 0.985 * L, T[1] * 0.993 * L, T[2] * L], 1); c.globalAlpha = 0.14 + 0.81 * Math.min(1, tint * 2.5); c.fill(); c.restore();
   }
 
-  if (!DRAIN) drawRefr(c, T);
+  if (!DRAIN) { c.save(); c.globalAlpha = .25 + .75 * Math.min(1, tint * 2.5); drawRefr(c, T); c.restore(); }
   // walls: water-tinted where the water is
   for (const side of [0, 1]) {
     const x0 = side ? gx + gw - wt : gx;
@@ -3171,7 +3171,7 @@ function drawFG(dt) {
   // water surface
   const sg = c.createLinearGradient(0, y0 - ryIn, 0, y0 + ryIn);
   sg.addColorStop(0, 'rgba(255,255,255,0.45)'); sg.addColorStop(1, 'rgba(255,255,255,0.06)');
-  { const wc = displayColor(meanA); c.save(); surfPath(c, 0, 0, PI * 2); c.closePath(); c.ellipse(cx, y0, iw / 2, ryIn, 0, 0, PI * 2); c.fillStyle = css(wc, .96); c.fill('evenodd'); c.restore(); }
+  { const wc = displayColor(meanA); c.save(); surfPath(c, 0, 0, PI * 2); c.closePath(); c.ellipse(cx, y0, iw / 2, ryIn, 0, 0, PI * 2); c.fillStyle = css(wc, .22 + .74 * Math.min(1, tint * 2.5)); c.fill('evenodd'); c.restore(); }
   surfPath(c, 0, 0, PI * 2); c.closePath();
   if (tint > 0.005) { c.fillStyle = css(T, 0.5); c.fill(); }
   c.fillStyle = sg; c.fill();
