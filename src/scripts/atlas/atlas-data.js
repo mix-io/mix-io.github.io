@@ -59,5 +59,5 @@ const AERO = { tick: null, WU: null, D: null, W: 0, H: 0, lo: null, hi: null, bu
     let kc = 0; for (let tI = 0; tI < n / 3; tI++) if (keepTri[tI]) kc++; const P2 = new Float32Array(kc * 9), C2 = new Float32Array(kc * 9); let o = 0; const pa = pos.array;
     for (let tI = 0; tI < n / 3; tI++) if (keepTri[tI]) { P2.set(pa.subarray(tI * 9, tI * 9 + 9), o); for (let j = 0; j < 9; j++) { const vv = col[tI * 9 + j]; C2[o + j] = vv <= .04045 ? vv / 12.92 : Math.pow((vv + .055) / 1.055, 2.4); } o += 9; }
     const g2 = new T.BufferGeometry(); g2.setAttribute('position', new T.BufferAttribute(P2, 3)); g2.setAttribute('color', new T.BufferAttribute(C2, 3)); g2.computeVertexNormals(); geo.dispose();
-    const mat = AERO.mat || (AERO.mat = new T.MeshPhysicalMaterial({ vertexColors: true, roughness: .55, metalness: 0, clearcoat: .45, clearcoatRoughness: .4, flatShading: true }));
+    const mat = AERO.mat || (AERO.mat = new T.MeshPhysicalMaterial({ vertexColors: true, roughness: .55, metalness: 0, clearcoat: .45, clearcoatRoughness: .4, flatShading: true })); if (!mat._hooked && AERO.hookMat) { mat._hooked = 1; AERO.hookMat(mat); }
     const mesh = new T.Mesh(g2, mat); AERO.busy = 0; cb(mesh); } };
