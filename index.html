@@ -1819,7 +1819,7 @@ function dnaAccent() { try { if (save.idn) return idColor(save.idn); const dc = 
   const C = (1 - Math.abs(2 * LL - 1)) * S2, X = C * (1 - Math.abs((h / 60) % 2 - 1)), m = LL - C / 2, [a1, b1, c1] = h < 60 ? [C, X, 0] : h < 120 ? [X, C, 0] : h < 180 ? [0, C, X] : h < 240 ? [0, X, C] : h < 300 ? [X, 0, C] : [C, 0, X]; return [a1 + m, b1 + m, c1 + m]; } catch (e) { return null; } }
 let dnaKey = ''; function applyDNA() { const c = dnaAccent(), v = c ? c.map(x => Math.round(clamp(x, 0, 1) * 255)).join(',') : '142,151,163'; if (v === dnaKey) return; dnaKey = v; document.documentElement.style.setProperty('--dna-rgb', v); try { if (SW) drawBG(); } catch (e) {} }
 function persist() { setTimeout(applyDNA, 0); save.t = Date.now(); try { const o = Object.assign({}, save); delete o.coins; const j = JSON.stringify(o); localStorage.setItem(KEY, j); const bk = JSON.parse(localStorage.getItem(KEY + '.best') || 'null'); if (!bk || (o.level || 1) >= (bk.level || 1)) localStorage.setItem(KEY + '.best', j); } catch (e) {} cloudPush(); try { SB.push(); } catch (e) {} }
-const BUILD = '6aea76f3'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
+const BUILD = '6aea77dd'; const SITE = 'https://mix-io.github.io/', ON_SITE = /github\.io$/.test(location.hostname);
 (() => { try { const m = location.hash.match(/[#&]mx=([^&]+)/); if (!m) return; const r = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if (r && typeof r.level === 'number') { const better = r.level >= (save.level || 1); Object.assign(save, mergeSaves(save, r, better)); save.acctAsked = 0; save.acctOffline = 0; save.acct = null; window.__askAcct = 1; try { const o = Object.assign({}, save); delete o.coins; localStorage.setItem(KEY, JSON.stringify(o)); localStorage.setItem(KEY + '.best', JSON.stringify(o)); } catch (e) {} setTimeout(() => { try { persist(); } catch (e) {} }, 0); setTimeout(() => { try { toast('your save is here ✦'); } catch (e) {} }, 2500); } history.replaceState(null, '', location.pathname + location.search); } catch (e) {} })();
 function mainLevel() { try { const m = JSON.parse(localStorage.getItem('mixio.v1') || 'null'), b = JSON.parse(localStorage.getItem('mixio.v1.best') || 'null'); return Math.max((m && m.level) || 0, (b && b.level) || 0); } catch (e) { return 0; } }
 function bringMain() { buzz(8); const u = saveLink(); try { const w = window.open(u, '_blank'); if (!w) location.href = u; } catch (e) { location.href = u; } }
@@ -3739,7 +3739,7 @@ vec3 env(vec3 d){ vec3 c=vec3(.015,.016,.022)+vec3(.05,.055,.07)*max(d.y,0.);
  return c; }
 float cloud(vec3 p){ float t=uT*.18; return .5+.25*sin(dot(p,vec3(2.1,1.3,-1.7))*1.6+t)+.17*sin(dot(p,vec3(-1.2,2.6,1.1))*2.3-t*1.3)+.08*sin(dot(p,vec3(3.1,-2.2,2.7))*3.4+t*1.7); }
 void main(){ vec3 ro=vec3(0.,0.,4.3), rd=normalize(vec3(v*.62,-1.6)); float t=2.0, md=9.; bool hit=false;
- for(int i=0;i<48;i++){ vec3 p=ro+rd*t; float d=sdf(p); md=min(md,d); if(d<.002){hit=true;break;} t+=d*.9; if(t>6.) break; }
+ for(int i=0;i<40;i++){ vec3 p=ro+rd*t; float d=sdf(p); md=min(md,d); if(d<.0025){hit=true;break;} t+=d*.95; if(t>6.) break; }
  vec3 col=vec3(0.); float a=0.; vec3 S=clamp(uSig,0.,1.); float lum=dot(S,vec3(.3,.55,.15)); vec3 rich=clamp(mix(vec3(lum),S,1.25),0.,1.);
  if(hit){ vec3 p=ro+rd*t, n=nrm(p), vv=-rd; float ndv=clamp(dot(n,vv),0.,1.), fr=.025+.5*pow(1.-ndv,3.2);
   vec3 L1=normalize(vec3(.35,.85,.45));
@@ -3805,7 +3805,7 @@ function dnaLoop(now) {
   if (!DNA.drag) { DNA.wy += ((red ? 0 : .22) - DNA.wy) * (1 - Math.exp(-dt * 1.6)); DNA.wx += (0 - DNA.wx) * (1 - Math.exp(-dt * 1.1)); DNA.wx = clamp(DNA.wx, -3.2, 3.2); DNA.wy = clamp(DNA.wy, -3.2, 3.2); dnaRot(DNA.wx * dt, DNA.wy * dt); DNA.yaw += DNA.wy * dt; }
   { const tx = DNA.press * .1, ty = -DNA.press * .08; for (const [a, v] of [['sqx', 'svx'], ['sqy', 'svy']]) { const tg = a === 'sqx' ? tx : ty, acc = (tg - DNA[a]) * 48 - DNA[v] * 3.4; DNA[v] += acc * dt; DNA[a] += DNA[v] * dt; DNA[a] = clamp(DNA[a], -.38, .5); } }
   if (DNA.pulseT) { DNA.pulse += (DNA.pulseT - DNA.pulse) * (1 - Math.exp(-dt * 3)); if (DNA.pulse > .9 * DNA.pulseT) DNA.pulseT = 0; } else DNA.pulse *= Math.exp(-dt * 1.15);
-  if (DNA.G && cv === DNA.G.cv) { const busy = DNA.drag || DNA.pulse > .02 || Math.abs(DNA.sqx) + Math.abs(DNA.sqy) + Math.abs(DNA.svx) + Math.abs(DNA.svy) > .01 || (DNA.ripT && now - DNA.ripT < 5000) || Math.abs(DNA.wx) + Math.abs(DNA.wy) > .6 || DNA.hBlend; if (!busy && DNA.ld && now - DNA.ld < 32) return; DNA.ld = now; DNA.G.draw(red ? 0 : t); return; }
+  if (DNA.G && cv === DNA.G.cv) { const busy = DNA.drag || DNA.pulse > .02 || Math.abs(DNA.sqx) + Math.abs(DNA.sqy) + Math.abs(DNA.svx) + Math.abs(DNA.svy) > .01 || (DNA.ripT && now - DNA.ripT < 5000) || Math.abs(DNA.wx) + Math.abs(DNA.wy) > .6 || DNA.hBlend; if (!busy && DNA.ld && now - DNA.ld < 40) return; DNA.ld = now; DNA.G.draw(red ? 0 : t); return; }
   x.clearRect(0, 0, N, N); x.globalCompositeOperation = 'source-over';
   const EN = DNA.energy || 1, SPD = DNA.speed || 1, pul = 1 + (red ? 0 : .04 * Math.sin(t * 1.3 * SPD)) + DNA.pulse * .25;
   x.globalCompositeOperation = 'lighter';
@@ -4157,12 +4157,12 @@ const ATLAS = (() => {
     { const key = new T.DirectionalLight(0xfff6ea, 2.1 / PI); key.position.set(-3.2, 2.4, 2.4); sc3.add(key); AERO.key = key; sc3.add(new T.HemisphereLight(0xdff6ff, 0x1a3a4a, .7 / PI)); const fr = new T.DirectionalLight(0xffffff, .45 / PI); fr.position.set(.5, .3, 5); sc3.add(fr); const rim = new T.DirectionalLight(0x9fe8ff, 1.0 / PI); rim.position.set(3.4, .8, -2.6); sc3.add(rim); const kick = new T.DirectionalLight(0x7dffc4, .5 / PI); kick.position.set(1, -3, 1); sc3.add(kick); }
     // water (approved soft values)
     const WU = { t: { value: 0 }, hm: { value: null }, sunV: { value: new T.Vector3(-.4, .5, .77) } }; AERO.WU = WU;
-    const ocean = new T.Mesh(new T.SphereGeometry(1, 160, 80), new T.ShaderMaterial({ uniforms: WU,
+    const ocean = new T.Mesh(new T.SphereGeometry(1, 96, 48), new T.ShaderMaterial({ uniforms: WU,
       vertexShader: 'varying vec2 vUv; varying vec3 vP; varying vec3 vN; varying vec3 vV; void main(){ vUv = uv; vP = normalize(position); vec4 mv = modelViewMatrix*vec4(position,1.); vN = normalize(normalMatrix*normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix*mv; }',
       fragmentShader: `precision highp float; uniform float t; uniform sampler2D hm; uniform vec3 sunV; varying vec2 vUv; varying vec3 vP; varying vec3 vN; varying vec3 vV;
       float h(vec3 p){ return fract(sin(dot(p, vec3(127.1,311.7,74.7)))*43758.5453); }
       float n3(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(mix(h(i),h(i+vec3(1,0,0)),f.x),mix(h(i+vec3(0,1,0)),h(i+vec3(1,1,0)),f.x),f.y),mix(mix(h(i+vec3(0,0,1)),h(i+vec3(1,0,1)),f.x),mix(h(i+vec3(0,1,1)),h(i+vec3(1,1,1)),f.x),f.y),f.z); }
-      float fbm(vec3 p){ float a=.5, r=0.; for(int k=0;k<4;k++){ r+=a*n3(p); p=p*2.03+vec3(1.7,9.2,3.1); a*=.5; } return r; }
+      float fbm(vec3 p){ float a=.5, r=0.; for(int k=0;k<3;k++){ r+=a*n3(p); p=p*2.03+vec3(1.7,9.2,3.1); a*=.5; } return r; }
       float fbw(vec3 p){ float a=.5, r=0.; for(int k=0;k<2;k++){ r+=a*n3(p); p=p*2.1+vec3(3.1,1.7,5.3); a*=.5; } return r; }
       void main(){
         vec3 p = vP*2.2;
@@ -4201,7 +4201,7 @@ const ATLAS = (() => {
     const himg = new Image(); himg.onload = () => { try { const hmTex = new T.Texture(himg); hmTex.needsUpdate = true; hmTex.wrapS = T.RepeatWrapping; WU.hm.value = hmTex; const Wd = himg.width, Hd = himg.height, cv = document.createElement('canvas'); cv.width = Wd; cv.height = Hd; const cx = cv.getContext('2d'); cx.drawImage(himg, 0, 0); AERO.D = cx.getImageData(0, 0, Wd, Hd).data; AERO.W = Wd; AERO.H = Hd; AERO.land(60, m => { AERO.lo = m; grp.add(m); }); } catch (e) { console.warn('[mix.io] earth', e); } }; himg.src = AERO_HM;
     // sky: twinkling stars, faint haze band, low-poly moon, shooting star (fixed; never rotates with the globe)
     { // real night sky: dense pinpoint stars, a Milky Way made of faint stars (no haze, no moon)
-      const N = 9000, sp2 = new Float32Array(N * 3), ss = new Float32Array(N), sph = new Float32Array(N), scl = new Float32Array(N * 3), bn = new T.Vector3(.35, 1, -.25).normalize(), tA = new T.Vector3(1, 0, 0).cross(bn).normalize(), tB = bn.clone().cross(tA).normalize();
+      const N = 7000, sp2 = new Float32Array(N * 3), ss = new Float32Array(N), sph = new Float32Array(N), scl = new Float32Array(N * 3), bn = new T.Vector3(.35, 1, -.25).normalize(), tA = new T.Vector3(1, 0, 0).cross(bn).normalize(), tB = bn.clone().cross(tA).normalize();
       for (let i = 0; i < N; i++) { let x, y, z; if (i < N * .45) { const a = Math.random() * 6.283, w = (Math.random() + Math.random() + Math.random() - 1.5) * .16; x = tA.x * Math.cos(a) + tB.x * Math.sin(a) + bn.x * w; y = tA.y * Math.cos(a) + tB.y * Math.sin(a) + bn.y * w; z = tA.z * Math.cos(a) + tB.z * Math.sin(a) + bn.z * w; const l = Math.hypot(x, y, z); x /= l; y /= l; z /= l; } else { const u = Math.random() * 2 - 1, a = Math.random() * 6.283, rr = Math.sqrt(1 - u * u); x = rr * Math.cos(a); y = u; z = rr * Math.sin(a); }
         const R = 28; sp2.set([x * R, y * R, z * R], i * 3); const band = i < N * .45; ss[i] = band ? Math.pow(Math.random(), 6) * 1.6 + .35 : Math.pow(Math.random(), 4.5) * 3.2 + .4; sph[i] = Math.random() * 6.283;
         const k = Math.random(); scl.set(k < .12 ? [.72, .82, 1] : k < .2 ? [1, .88, .72] : k < .23 ? [1, .76, .62] : [1, 1, .98], i * 3); }

@@ -44,12 +44,12 @@ const ATLAS = (() => {
     { const key = new T.DirectionalLight(0xfff6ea, 2.1 / PI); key.position.set(-3.2, 2.4, 2.4); sc3.add(key); AERO.key = key; sc3.add(new T.HemisphereLight(0xdff6ff, 0x1a3a4a, .7 / PI)); const fr = new T.DirectionalLight(0xffffff, .45 / PI); fr.position.set(.5, .3, 5); sc3.add(fr); const rim = new T.DirectionalLight(0x9fe8ff, 1.0 / PI); rim.position.set(3.4, .8, -2.6); sc3.add(rim); const kick = new T.DirectionalLight(0x7dffc4, .5 / PI); kick.position.set(1, -3, 1); sc3.add(kick); }
     // water (approved soft values)
     const WU = { t: { value: 0 }, hm: { value: null }, sunV: { value: new T.Vector3(-.4, .5, .77) } }; AERO.WU = WU;
-    const ocean = new T.Mesh(new T.SphereGeometry(1, 160, 80), new T.ShaderMaterial({ uniforms: WU,
+    const ocean = new T.Mesh(new T.SphereGeometry(1, 96, 48), new T.ShaderMaterial({ uniforms: WU,
       vertexShader: 'varying vec2 vUv; varying vec3 vP; varying vec3 vN; varying vec3 vV; void main(){ vUv = uv; vP = normalize(position); vec4 mv = modelViewMatrix*vec4(position,1.); vN = normalize(normalMatrix*normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix*mv; }',
       fragmentShader: `precision highp float; uniform float t; uniform sampler2D hm; uniform vec3 sunV; varying vec2 vUv; varying vec3 vP; varying vec3 vN; varying vec3 vV;
       float h(vec3 p){ return fract(sin(dot(p, vec3(127.1,311.7,74.7)))*43758.5453); }
       float n3(vec3 p){ vec3 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(mix(h(i),h(i+vec3(1,0,0)),f.x),mix(h(i+vec3(0,1,0)),h(i+vec3(1,1,0)),f.x),f.y),mix(mix(h(i+vec3(0,0,1)),h(i+vec3(1,0,1)),f.x),mix(h(i+vec3(0,1,1)),h(i+vec3(1,1,1)),f.x),f.y),f.z); }
-      float fbm(vec3 p){ float a=.5, r=0.; for(int k=0;k<4;k++){ r+=a*n3(p); p=p*2.03+vec3(1.7,9.2,3.1); a*=.5; } return r; }
+      float fbm(vec3 p){ float a=.5, r=0.; for(int k=0;k<3;k++){ r+=a*n3(p); p=p*2.03+vec3(1.7,9.2,3.1); a*=.5; } return r; }
       float fbw(vec3 p){ float a=.5, r=0.; for(int k=0;k<2;k++){ r+=a*n3(p); p=p*2.1+vec3(3.1,1.7,5.3); a*=.5; } return r; }
       void main(){
         vec3 p = vP*2.2;
@@ -88,7 +88,7 @@ const ATLAS = (() => {
     const himg = new Image(); himg.onload = () => { try { const hmTex = new T.Texture(himg); hmTex.needsUpdate = true; hmTex.wrapS = T.RepeatWrapping; WU.hm.value = hmTex; const Wd = himg.width, Hd = himg.height, cv = document.createElement('canvas'); cv.width = Wd; cv.height = Hd; const cx = cv.getContext('2d'); cx.drawImage(himg, 0, 0); AERO.D = cx.getImageData(0, 0, Wd, Hd).data; AERO.W = Wd; AERO.H = Hd; AERO.land(60, m => { AERO.lo = m; grp.add(m); }); } catch (e) { console.warn('[mix.io] earth', e); } }; himg.src = AERO_HM;
     // sky: twinkling stars, faint haze band, low-poly moon, shooting star (fixed; never rotates with the globe)
     { // real night sky: dense pinpoint stars, a Milky Way made of faint stars (no haze, no moon)
-      const N = 9000, sp2 = new Float32Array(N * 3), ss = new Float32Array(N), sph = new Float32Array(N), scl = new Float32Array(N * 3), bn = new T.Vector3(.35, 1, -.25).normalize(), tA = new T.Vector3(1, 0, 0).cross(bn).normalize(), tB = bn.clone().cross(tA).normalize();
+      const N = 7000, sp2 = new Float32Array(N * 3), ss = new Float32Array(N), sph = new Float32Array(N), scl = new Float32Array(N * 3), bn = new T.Vector3(.35, 1, -.25).normalize(), tA = new T.Vector3(1, 0, 0).cross(bn).normalize(), tB = bn.clone().cross(tA).normalize();
       for (let i = 0; i < N; i++) { let x, y, z; if (i < N * .45) { const a = Math.random() * 6.283, w = (Math.random() + Math.random() + Math.random() - 1.5) * .16; x = tA.x * Math.cos(a) + tB.x * Math.sin(a) + bn.x * w; y = tA.y * Math.cos(a) + tB.y * Math.sin(a) + bn.y * w; z = tA.z * Math.cos(a) + tB.z * Math.sin(a) + bn.z * w; const l = Math.hypot(x, y, z); x /= l; y /= l; z /= l; } else { const u = Math.random() * 2 - 1, a = Math.random() * 6.283, rr = Math.sqrt(1 - u * u); x = rr * Math.cos(a); y = u; z = rr * Math.sin(a); }
         const R = 28; sp2.set([x * R, y * R, z * R], i * 3); const band = i < N * .45; ss[i] = band ? Math.pow(Math.random(), 6) * 1.6 + .35 : Math.pow(Math.random(), 4.5) * 3.2 + .4; sph[i] = Math.random() * 6.283;
         const k = Math.random(); scl.set(k < .12 ? [.72, .82, 1] : k < .2 ? [1, .88, .72] : k < .23 ? [1, .76, .62] : [1, 1, .98], i * 3); }

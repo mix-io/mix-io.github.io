@@ -35,7 +35,7 @@ vec3 env(vec3 d){ vec3 c=vec3(.015,.016,.022)+vec3(.05,.055,.07)*max(d.y,0.);
  return c; }
 float cloud(vec3 p){ float t=uT*.18; return .5+.25*sin(dot(p,vec3(2.1,1.3,-1.7))*1.6+t)+.17*sin(dot(p,vec3(-1.2,2.6,1.1))*2.3-t*1.3)+.08*sin(dot(p,vec3(3.1,-2.2,2.7))*3.4+t*1.7); }
 void main(){ vec3 ro=vec3(0.,0.,4.3), rd=normalize(vec3(v*.62,-1.6)); float t=2.0, md=9.; bool hit=false;
- for(int i=0;i<48;i++){ vec3 p=ro+rd*t; float d=sdf(p); md=min(md,d); if(d<.002){hit=true;break;} t+=d*.9; if(t>6.) break; }
+ for(int i=0;i<40;i++){ vec3 p=ro+rd*t; float d=sdf(p); md=min(md,d); if(d<.0025){hit=true;break;} t+=d*.95; if(t>6.) break; }
  vec3 col=vec3(0.); float a=0.; vec3 S=clamp(uSig,0.,1.); float lum=dot(S,vec3(.3,.55,.15)); vec3 rich=clamp(mix(vec3(lum),S,1.25),0.,1.);
  if(hit){ vec3 p=ro+rd*t, n=nrm(p), vv=-rd; float ndv=clamp(dot(n,vv),0.,1.), fr=.025+.5*pow(1.-ndv,3.2);
   vec3 L1=normalize(vec3(.35,.85,.45));
@@ -101,7 +101,7 @@ function dnaLoop(now) {
   if (!DNA.drag) { DNA.wy += ((red ? 0 : .22) - DNA.wy) * (1 - Math.exp(-dt * 1.6)); DNA.wx += (0 - DNA.wx) * (1 - Math.exp(-dt * 1.1)); DNA.wx = clamp(DNA.wx, -3.2, 3.2); DNA.wy = clamp(DNA.wy, -3.2, 3.2); dnaRot(DNA.wx * dt, DNA.wy * dt); DNA.yaw += DNA.wy * dt; }
   { const tx = DNA.press * .1, ty = -DNA.press * .08; for (const [a, v] of [['sqx', 'svx'], ['sqy', 'svy']]) { const tg = a === 'sqx' ? tx : ty, acc = (tg - DNA[a]) * 48 - DNA[v] * 3.4; DNA[v] += acc * dt; DNA[a] += DNA[v] * dt; DNA[a] = clamp(DNA[a], -.38, .5); } }
   if (DNA.pulseT) { DNA.pulse += (DNA.pulseT - DNA.pulse) * (1 - Math.exp(-dt * 3)); if (DNA.pulse > .9 * DNA.pulseT) DNA.pulseT = 0; } else DNA.pulse *= Math.exp(-dt * 1.15);
-  if (DNA.G && cv === DNA.G.cv) { const busy = DNA.drag || DNA.pulse > .02 || Math.abs(DNA.sqx) + Math.abs(DNA.sqy) + Math.abs(DNA.svx) + Math.abs(DNA.svy) > .01 || (DNA.ripT && now - DNA.ripT < 5000) || Math.abs(DNA.wx) + Math.abs(DNA.wy) > .6 || DNA.hBlend; if (!busy && DNA.ld && now - DNA.ld < 32) return; DNA.ld = now; DNA.G.draw(red ? 0 : t); return; }
+  if (DNA.G && cv === DNA.G.cv) { const busy = DNA.drag || DNA.pulse > .02 || Math.abs(DNA.sqx) + Math.abs(DNA.sqy) + Math.abs(DNA.svx) + Math.abs(DNA.svy) > .01 || (DNA.ripT && now - DNA.ripT < 5000) || Math.abs(DNA.wx) + Math.abs(DNA.wy) > .6 || DNA.hBlend; if (!busy && DNA.ld && now - DNA.ld < 40) return; DNA.ld = now; DNA.G.draw(red ? 0 : t); return; }
   x.clearRect(0, 0, N, N); x.globalCompositeOperation = 'source-over';
   const EN = DNA.energy || 1, SPD = DNA.speed || 1, pul = 1 + (red ? 0 : .04 * Math.sin(t * 1.3 * SPD)) + DNA.pulse * .25;
   x.globalCompositeOperation = 'lighter';
