@@ -1219,4 +1219,15 @@ body,body *{-webkit-touch-callout:none}img,svg,canvas{-webkit-user-drag:none}inp
 
 .wel .wink{position:absolute;inset:0;width:100%;height:100%;z-index:5;background:#040506;opacity:1}
 .wstep[data-s="0"] .wwm h1{animation-delay:0s}
+#eLeg,#eAge{display:none!important}
+.yhero{margin-top:0!important}
+.yhero .yl{cursor:default}.yhero .yl:not(.dna):active{opacity:1}
+.yhero .yl b i{color:rgba(255,255,255,.55)}
+.settings .yboard{max-width:none;margin:18px -4px 0;padding:18px 14px 14px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 .5px rgba(255,255,255,.1),0 20px 40px -24px rgba(var(--dna-rgb),.5)}
+.settings .ybh{padding:0 4px 12px}.settings .ybh b{font-size:22px!important;font-weight:800;letter-spacing:-.02em}.settings .ybh small{display:none}
+.settings #yL .lbr{padding:13px 14px;font-size:15px;margin-top:8px}
+.settings #yL .lbr.top{padding:16px 16px;font-size:17px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 0 0 1px rgba(255,210,122,.45),0 0 22px -10px rgba(255,210,122,.8);background:linear-gradient(180deg,rgba(255,210,122,.14),rgba(255,210,122,.03))}
+.settings #yL .lbr.top .lbn{color:#ffd27a;font-weight:800}.settings #yL .lbr.top .lbc{font-size:18px;font-weight:800}
+.settings .ybtn{margin-top:12px;padding:14px;font-size:14px;border-radius:16px}
+
 </style>
