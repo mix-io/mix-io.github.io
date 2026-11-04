@@ -1217,4 +1217,6 @@ body,body *{-webkit-touch-callout:none}img,svg,canvas{-webkit-user-drag:none}inp
 .eleg,.eage{max-width:340px;margin-left:auto;margin-right:auto}
 .settings .yboard{max-width:340px;margin-left:auto;margin-right:auto}
 
+.wel .wink{position:absolute;inset:0;width:100%;height:100%;z-index:5;background:#040506;opacity:1}
+.wstep[data-s="0"] .wwm h1{animation-delay:0s}
 </style>
