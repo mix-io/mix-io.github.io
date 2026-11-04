@@ -1230,4 +1230,19 @@ body,body *{-webkit-touch-callout:none}img,svg,canvas{-webkit-user-drag:none}inp
 .settings #yL .lbr.top .lbn{color:#ffd27a;font-weight:800}.settings #yL .lbr.top .lbc{font-size:18px;font-weight:800}
 .settings .ybtn{margin-top:12px;padding:14px;font-size:14px;border-radius:16px}
 
+#hRank{display:none!important}
+.hgem{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);left:14px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:0;padding:0;color:#fff;background:var(--g-bg,rgba(255,255,255,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 .5px rgba(255,255,255,.1),0 0 18px -6px var(--gc);z-index:5}
+.hgem svg{filter:drop-shadow(0 0 6px color-mix(in srgb,var(--gc) 70%,transparent))}
+.hfound{margin:10px auto 0;width:min(280px,80%)}
+.hprog{display:flex;align-items:center;gap:10px}
+.hprog b{font:700 15px var(--f-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:#fff;flex:none}
+.hprog small{font:600 12px var(--f-ui);color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+.hpt{flex:1;height:5px;border-radius:99px;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 1px rgba(0,0,0,.5),inset 0 0 0 .5px rgba(255,255,255,.08);position:relative;overflow:visible}
+.hpt i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,rgba(var(--dna-rgb),.55),rgb(var(--dna-rgb)));box-shadow:0 0 10px -2px rgba(var(--dna-rgb),.9);min-width:6px;transition:width 1.2s var(--spring-soft);overflow:hidden}
+.hpt i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);background-size:200% 100%;animation:hpsh 3.2s ease-in-out infinite}
+@keyframes hpsh{0%{background-position:150% 0}100%{background-position:-50% 0}}
+.hpt i u{position:absolute;right:-3px;top:50%;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,rgb(var(--dna-rgb)) 70%);box-shadow:0 0 10px 1px rgba(var(--dna-rgb),.8)}
+.hfound em{display:block;text-align:center;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:7px}
+@media (prefers-reduced-motion:reduce){.hpt i::after{animation:none}}
+
 </style>
